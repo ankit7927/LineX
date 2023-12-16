@@ -41,8 +41,7 @@ public class DBService {
     }
 
     public List<Message> getRangedChat(String tableName) {
-        String[] proj = {DBStrings.ID, DBStrings.SENDER_ID, DBStrings.SENDER_USERNAME, DBStrings.CONTENT, DBStrings.TIME};
-        Cursor cursor = readableDb.query(tableName, proj, null, null, null, null, null);
+        Cursor cursor = readableDb.rawQuery("SELECT * FROM "+tableName, new String[] {});
         List<Message> messages = new ArrayList<>();
         while (cursor.moveToNext()) {
             messages.add(new Message(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4)).setId(cursor.getInt(0)));

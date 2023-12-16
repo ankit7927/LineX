@@ -21,10 +21,11 @@ import java.util.List;
 public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
     Context context;
-    List<Message> messages = new ArrayList<>();
+    List<Message> messages;
 
-    public MessageAdapter(Context context) {
+    public MessageAdapter(Context context, List<Message> messages1) {
         this.context = context;
+        this.messages = messages1;
     }
 
     @NonNull
@@ -55,15 +56,12 @@ public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.Message
 
 
     public void setMessages(List<Message> newMessages) {
+        MessageDiffUtil messageDiffUtil = new MessageDiffUtil(messages, newMessages);
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(messageDiffUtil);
 
-            MessageDiffUtil messageDiffUtil = new MessageDiffUtil(messages, newMessages);
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(messageDiffUtil);
+        messages.addAll(newMessages);
 
-            messages.clear();
-            messages.addAll(newMessages);
-
-            result.dispatchUpdatesTo(this);
-
+        result.dispatchUpdatesTo(this);
     }
 
 

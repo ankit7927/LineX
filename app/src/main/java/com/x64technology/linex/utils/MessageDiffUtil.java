@@ -34,7 +34,7 @@ public class MessageDiffUtil extends DiffUtil.Callback {
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         Message old = oldMessages.get(oldItemPosition);
-        Message nMs = oldMessages.get(newItemPosition);
+        Message nMs = newMessages.get(newItemPosition);
 
         return old.id == nMs.id &&
                 old.content.equals(nMs.content) &&

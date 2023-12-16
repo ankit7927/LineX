@@ -16,15 +16,21 @@ import com.x64technology.linex.databinding.ActivityChatBinding;
 import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Message;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ChatScreen extends AppCompatActivity {
     ActivityChatBinding chatBinding;
     MessageAdapter messageAdapter;
-    MessageViewModel messageVIewModel;
     DBService dbService;
     Chat chat;
+    List<Message> tempMess = new ArrayList<>();
     Intent intent;
+    SimpleDateFormat simpleDateFormat;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +48,16 @@ public class ChatScreen extends AppCompatActivity {
         if (intent.hasExtra("chat")) chat = (Chat) intent.getSerializableExtra("chat");
 
         dbService = new DBService(this);
-        messageAdapter = new MessageAdapter(this);
-        messageVIewModel = new ViewModelProvider(this).get(MessageViewModel.class);
+
+        messageAdapter = new MessageAdapter(this, dbService.getRangedChat(chat.table_name));
 
         chatBinding.msgRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         chatBinding.msgRecycler.setAdapter(messageAdapter);
 
-        messageAdapter.setMessages(dbService.getRangedChat(chat.getUsername()));
+        chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
+
+        simpleDateFormat = new SimpleDateFormat("h:mm a");
     }
 
 
@@ -57,31 +65,20 @@ public class ChatScreen extends AppCompatActivity {
         chatBinding.toolbar.setNavigationOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
         // add logo to toolbar
 
-        messageVIewModel.getMessages().observe(this, new Observer<List<Message>>() {
-            @Override
-            public void onChanged(List<Message> messages) {
-                messageAdapter.setMessages(messages);
-                chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
-            }
+        chatBinding.sendBtn.setOnClickListener(view -> {
+            String msg = chatBinding.msgBox.getEditableText().toString();
+            String date = simpleDateFormat.format(Calendar.getInstance().getTime());
+
+            Message message = new Message( "test", "temp", msg, date);
+            new ArrayList<Message>().add(message);
+
+            dbService.insertMsg(chat.username, message);
+            tempMess.add(message);
+            messageAdapter.setMessages(tempMess);
+
+            chatBinding.msgBox.getEditableText().clear();
+            chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
+            tempMess.clear();
         });
-
-        chatBinding.sendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String msg = chatBinding.msgBox.getEditableText().toString();
-                Message message = new Message( "test", "temp", msg, "time");
-
-                messageVIewModel.insert(message);
-                dbService.insertMsg(chat.username, message);
-
-                chatBinding.msgBox.getEditableText().clear();
-            }
-        });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        messageVIewModel.cleanTable();
     }
 }
