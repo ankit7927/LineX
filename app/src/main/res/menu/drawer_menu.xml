@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="Profile" />
-    <item android:title="Connections" />
+    <item android:title="Contacts" />
     <item android:title="Settings" />
     <item android:title="Logout" />
 </menu>

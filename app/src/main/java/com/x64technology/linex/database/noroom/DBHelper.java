@@ -7,20 +7,20 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class DBHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 1;
-    private static final String  DB_NAME = "messages";
+
 
     public DBHelper(@Nullable Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
+        super(context, DBStrings.DB_NAME, null, DBStrings.DB_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
+        sqLiteDatabase.execSQL(DBStrings.CONTACT_TABLE_QUERY);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        sqLiteDatabase.execSQL(DBStrings.DROP_CONTACT_TABLE_QUERY);
+        onCreate(sqLiteDatabase);
     }
 }

@@ -27,6 +27,15 @@ public class DBService {
         );
     }
 
+    public void insertContact(String username, String userId, String dp, String reqType) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBStrings.CONTACT_USERNAME, username);
+        contentValues.put(DBStrings.CONTACT_USER_ID, userId);
+        contentValues.put(DBStrings.CONTACT_DP_IMAGE_LINK, dp);
+        contentValues.put(DBStrings.CONTACT_REQUEST_TYPE, reqType);
+    }
+
+
     public void insertMsg(String tableName, Message message) {
         ContentValues contentValues = new ContentValues();
 
@@ -36,8 +45,6 @@ public class DBService {
         contentValues.put(DBStrings.TIME, message.time);
 
         writableDb.insert(tableName, null, contentValues);
-
-        System.out.println("message added");
     }
 
     public List<Message> getRangedChat(String tableName) {

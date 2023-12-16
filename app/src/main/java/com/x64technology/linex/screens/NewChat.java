@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.noroom.DBService;
+import com.x64technology.linex.database.noroom.DBStrings;
 import com.x64technology.linex.databinding.ActivityNewChatBinding;
 import com.x64technology.linex.models.Chat;
 
@@ -34,19 +35,12 @@ public class NewChat extends AppCompatActivity {
     }
 
     private void setCallBacks() {
-        newChatBinding.addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username = newChatBinding.usernameEdit.getEditableText().toString();
-                String userid = newChatBinding.useridEdit.getEditableText().toString();
-                String lastmsg = newChatBinding.lastmsgEdit.getEditableText().toString();
+        newChatBinding.requestBtn.setOnClickListener(view -> {
+            String username = newChatBinding.usernameInp.getEditableText().toString();
 
-                chatViewModel.addNewChat(new Chat(username, username, userid, "myrooom", lastmsg, 0));
-                dbService.newChat(username);
-
-                Toast.makeText(NewChat.this, "chat added", Toast.LENGTH_SHORT).show();
-                finish();
-            }
+            dbService.insertContact(username, "unknown", "unknown", DBStrings.REQUEST_SENT);
+            Toast.makeText(NewChat.this, "Chat request sent", Toast.LENGTH_SHORT).show();
+            finish();
         });
     }
 
