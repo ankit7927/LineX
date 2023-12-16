@@ -1,24 +1,17 @@
 package com.x64technology.linex;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.x64technology.linex.adapters.ChatsAdapter;
 import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.databinding.ActivityMainBinding;
-import com.x64technology.linex.models.Chat;
-import com.x64technology.linex.screens.Auth;
 import com.x64technology.linex.screens.NewChat;
 import com.x64technology.linex.services.PreferenceManager;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     ChatViewModel chatViewModel;
@@ -48,10 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding.floating.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, NewChat.class)));
 
-        chatViewModel.getChats().observe(this, chats -> {
-            chatsAdapter.setChats(chats);
-            System.out.println(chats.size());
-        });
+        chatViewModel.getChats().observe(this, chats -> chatsAdapter.setChats(chats));
     }
 
     @Override

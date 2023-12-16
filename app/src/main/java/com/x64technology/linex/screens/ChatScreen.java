@@ -2,21 +2,16 @@ package com.x64technology.linex.screens;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.x64technology.linex.adapters.MessageAdapter;
-import com.x64technology.linex.database.message.MessageViewModel;
 import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityChatBinding;
 import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Message;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,12 +44,12 @@ public class ChatScreen extends AppCompatActivity {
 
         dbService = new DBService(this);
 
-        messageAdapter = new MessageAdapter(this, dbService.getRangedChat(chat.table_name));
+        messageAdapter = new MessageAdapter(this, dbService.getRangedChat(chat.messageTableName));
 
+
+        chatBinding.msgRecycler.setItemAnimator(null);
         chatBinding.msgRecycler.setLayoutManager(new LinearLayoutManager(this));
-
         chatBinding.msgRecycler.setAdapter(messageAdapter);
-
         chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
 
         simpleDateFormat = new SimpleDateFormat("h:mm a");
@@ -72,7 +67,7 @@ public class ChatScreen extends AppCompatActivity {
             Message message = new Message( "test", "temp", msg, date);
             new ArrayList<Message>().add(message);
 
-            dbService.insertMsg(chat.username, message);
+            dbService.insertMsg(chat.messageTableName, message);
             tempMess.add(message);
             messageAdapter.setMessages(tempMess);
 

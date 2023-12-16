@@ -15,7 +15,6 @@ import com.x64technology.linex.databinding.LayoutMessageBinding;
 import com.x64technology.linex.models.Message;
 import com.x64technology.linex.utils.MessageDiffUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {

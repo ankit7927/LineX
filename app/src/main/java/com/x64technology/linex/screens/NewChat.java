@@ -37,18 +37,11 @@ public class NewChat extends AppCompatActivity {
         newChatBinding.addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = newChatBinding.usernameEdit.getText().toString();
-                String userid = newChatBinding.useridEdit.getText().toString();
-                String lastmsg = newChatBinding.lastmsgEdit.getText().toString();
+                String username = newChatBinding.usernameEdit.getEditableText().toString();
+                String userid = newChatBinding.useridEdit.getEditableText().toString();
+                String lastmsg = newChatBinding.lastmsgEdit.getEditableText().toString();
 
-                Chat chat = new Chat();
-                chat.setUsername(username);
-                chat.setRoom("myrrom");
-                chat.setLast_msg(lastmsg);
-                chat.setTable_name(username);
-                chat.setUser_id(userid);
-
-                chatViewModel.addNewChat(chat);
+                chatViewModel.addNewChat(new Chat(username, username, userid, "myrooom", lastmsg, 0));
                 dbService.newChat(username);
 
                 Toast.makeText(NewChat.this, "chat added", Toast.LENGTH_SHORT).show();

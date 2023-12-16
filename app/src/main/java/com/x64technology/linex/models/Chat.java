@@ -1,73 +1,56 @@
 package com.x64technology.linex.models;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity(tableName = "chats")
 public class Chat implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    public int id;
-    public String table_name;
-    public String username;
-    public String user_id;
+    public int chatId;
+    public String messageTableName;
+    public String chatUsername;
+    public String chatUserId;
     public String room;
-    public String last_msg;
+    public String lastMessage;
+    public int unreadSmgCount;
 
-    public int getId() {
-        return id;
-    }
-
-    public String getTable_name() {
-        return table_name;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getUser_id() {
-        return user_id;
-    }
-
-    public String getRoom() {
-        return room;
-    }
-
-    public String getLast_msg() {
-        return last_msg;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
-
-    public void setRoom(String room) {
+    public Chat(String messageTableName, String chatUsername, String chatUserId, String room, String lastMessage, int unreadSmgCount) {
+        this.messageTableName = messageTableName;
+        this.chatUsername = chatUsername;
+        this.chatUserId = chatUserId;
         this.room = room;
+        this.lastMessage = lastMessage;
+        this.unreadSmgCount = unreadSmgCount;
     }
 
-    public void setLast_msg(String last_msg) {
-        this.last_msg = last_msg;
-    }
-
-    public void setTable_name(String table_name) {
-        this.table_name = table_name;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         return "Chat{" +
-                "id=" + id +
-                ", table_name='" + table_name + '\'' +
-                ", username='" + username + '\'' +
-                ", user_id='" + user_id + '\'' +
+                "chatId=" + chatId +
+                ", messageTableName='" + messageTableName + '\'' +
+                ", chatUsername='" + chatUsername + '\'' +
+                ", chatUserId='" + chatUserId + '\'' +
                 ", room='" + room + '\'' +
-                ", last_msg='" + last_msg + '\'' +
+                ", lastMessage='" + lastMessage + '\'' +
+                ", unreadSmgCount=" + unreadSmgCount +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Chat chat = (Chat) o;
+        return chatId == chat.chatId && unreadSmgCount == chat.unreadSmgCount && Objects.equals(messageTableName, chat.messageTableName) && Objects.equals(chatUsername, chat.chatUsername) && Objects.equals(chatUserId, chat.chatUserId) && Objects.equals(room, chat.room) && Objects.equals(lastMessage, chat.lastMessage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(chatId, messageTableName, chatUsername, chatUserId, room, lastMessage, unreadSmgCount);
     }
 }
