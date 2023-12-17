@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.models.Message;
 
 import java.util.ArrayList;
@@ -27,12 +28,15 @@ public class DBService {
         );
     }
 
-    public void insertContact(String username, String userId, String dp, String reqType) {
+    public void insertContact(String name, String username, String userId, String dp, String reqType) {
         ContentValues contentValues = new ContentValues();
+        contentValues.put(DBStrings.CONTACT_NAME, name);
         contentValues.put(DBStrings.CONTACT_USERNAME, username);
         contentValues.put(DBStrings.CONTACT_USER_ID, userId);
         contentValues.put(DBStrings.CONTACT_DP_IMAGE_LINK, dp);
         contentValues.put(DBStrings.CONTACT_REQUEST_TYPE, reqType);
+
+        writableDb.insert(DBStrings.CONTACT_TABLE_NAME, null, contentValues);
     }
 
 
@@ -55,5 +59,15 @@ public class DBService {
         }
         cursor.close();
         return messages;
+    }
+
+    public List<Contact> getContacts() {
+        Cursor cursor = readableDb.rawQuery("SELECT * FROM contact", new String[] {});
+        List<Contact> contacts = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            contacts.add(new Contact(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5)));
+        }
+        cursor.close();
+        return contacts;
     }
 }

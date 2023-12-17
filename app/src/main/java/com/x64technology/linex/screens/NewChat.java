@@ -38,7 +38,7 @@ public class NewChat extends AppCompatActivity {
         newChatBinding.requestBtn.setOnClickListener(view -> {
             String username = newChatBinding.usernameInp.getEditableText().toString();
 
-            dbService.insertContact(username, "unknown", "unknown", DBStrings.REQUEST_SENT);
+            dbService.insertContact("unknown", username, "unknown", "unknown", DBStrings.REQUEST_SENT);
             Toast.makeText(NewChat.this, "Chat request sent", Toast.LENGTH_SHORT).show();
             finish();
         });

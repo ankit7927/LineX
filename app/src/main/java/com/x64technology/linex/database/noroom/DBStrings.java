@@ -14,6 +14,8 @@ public class DBStrings {
 
     public static final String CONTACT_TABLE_NAME = "contact";
     public static final String CONTACT_ID = "contact_id";
+
+    public static final String CONTACT_NAME = "name";
     public static final String CONTACT_USERNAME = "username";
     public static final String CONTACT_USER_ID = "user_id";
     public static final String CONTACT_DP_IMAGE_LINK = "dp_image_link";
@@ -29,8 +31,8 @@ public class DBStrings {
 
 
     public static final String CONTACT_TABLE_QUERY = String.format(
-            "CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-            CONTACT_TABLE_NAME, CONTACT_ID, CONTACT_USERNAME, CONTACT_USER_ID, CONTACT_DP_IMAGE_LINK, CONTACT_REQUEST_TYPE
+            "CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
+            CONTACT_TABLE_NAME, CONTACT_ID, CONTACT_NAME,CONTACT_USERNAME, CONTACT_USER_ID, CONTACT_DP_IMAGE_LINK, CONTACT_REQUEST_TYPE
     );
 
     public static final String DROP_CONTACT_TABLE_QUERY = String.format(
