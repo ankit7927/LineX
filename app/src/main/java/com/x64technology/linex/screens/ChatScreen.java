@@ -64,16 +64,18 @@ public class ChatScreen extends AppCompatActivity {
             String msg = chatBinding.msgBox.getEditableText().toString();
             String date = simpleDateFormat.format(Calendar.getInstance().getTime());
 
-            Message message = new Message( "test", "temp", msg, date);
+            Message message = new Message("test", "temp", msg, date);
             new ArrayList<Message>().add(message);
 
-            dbService.insertMsg(chat.messageTableName, message);
             tempMess.add(message);
             messageAdapter.setMessages(tempMess);
 
             chatBinding.msgBox.getEditableText().clear();
             chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
             tempMess.clear();
+
+            dbService.insertMsg(chat.messageTableName, message);
+            // emit on socket
         });
     }
 }
