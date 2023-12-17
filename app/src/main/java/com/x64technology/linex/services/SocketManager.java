@@ -11,24 +11,19 @@ import io.socket.emitter.Emitter;
 public class SocketManager {
 
     IO.Options options;
-    private Socket socket;
+    public static Socket socket;
 
     public Socket initSocket(String token) {
         Map<String, String> test = new HashMap<>();
         test.put("token", token);
+
         options = new IO.Options();
         options.auth = test;
-        {
-            try {
-                socket = IO.socket("http://192.168.43.30:3000", options);
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            socket = IO.socket("http://192.168.43.30:3000", options);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
-        return socket;
-    }
-
-    public Socket getSocket() {
         return socket;
     }
 

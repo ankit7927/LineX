@@ -37,6 +37,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initVars() {
+        preferenceManager = new PreferenceManager(this);
+
+        socketManager = new SocketManager();
+        socket = socketManager.initSocket(preferenceManager.sharedPreferences.getString("token", ""));
+        SocketManager.addSocketListeners(socket);
+        socket.connect();
+
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         chatsAdapter = new ChatsAdapter(this);
 
@@ -63,15 +70,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        preferenceManager = new PreferenceManager(this);
-        if (preferenceManager.getUsername().equals("")) {
+
+        if (new PreferenceManager(this)
+                .sharedPreferences.getString("username", "").equals("")) {
             startActivity(new Intent(this, Auth.class));
             finish();
-        } else {
-            socketManager = new SocketManager();
-            socket = socketManager.initSocket(preferenceManager.getToken());
-            SocketManager.addSocketListeners(socket);
-            socket.connect();
         }
     }
 

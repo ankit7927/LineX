@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class PreferenceManager {
-    private final SharedPreferences sharedPreferences;
+    public final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
     public PreferenceManager(Context context) {
         String PREF = "my-pref";
@@ -19,23 +19,7 @@ public class PreferenceManager {
         editor.apply();
     }
 
-    public String getToken(){
-        return  sharedPreferences.getString("token", "");
-    }
-
-    public String getUsername(){
-        return  sharedPreferences.getString("username", "");
-    }
-
-    public String getUid(){
-        return  sharedPreferences.getString("uid", "");
-    }
-
     public void saveCurrentChatInfo(String chatId) {
         editor.putString("currentChat", chatId);
-    }
-
-    public String getCurrentChatId(){
-        return  sharedPreferences.getString("currentChat", "");
     }
 }
