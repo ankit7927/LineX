@@ -11,9 +11,9 @@ import io.socket.emitter.Emitter;
 public class SocketManager {
 
     IO.Options options;
-    private final Socket socket;
+    private Socket socket;
 
-    public SocketManager(String token) {
+    public Socket initSocket(String token) {
         Map<String, String> test = new HashMap<>();
         test.put("token", token);
         options = new IO.Options();
@@ -25,6 +25,7 @@ public class SocketManager {
                 throw new RuntimeException(e);
             }
         }
+        return socket;
     }
 
     public Socket getSocket() {

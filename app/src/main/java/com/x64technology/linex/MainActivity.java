@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, Auth.class));
             finish();
         } else {
-            socketManager = new SocketManager(preferenceManager.getToken());
-            socket = socketManager.getSocket();
+            socketManager = new SocketManager();
+            socket = socketManager.initSocket(preferenceManager.getToken());
             SocketManager.addSocketListeners(socket);
             socket.connect();
         }
