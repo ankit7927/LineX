@@ -12,7 +12,7 @@ import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.databinding.ActivityMainBinding;
 import com.x64technology.linex.screens.Auth;
 import com.x64technology.linex.screens.ContactList;
-import com.x64technology.linex.screens.NewChat;
+import com.x64technology.linex.screens.NewContact;
 import com.x64technology.linex.services.PreferenceManager;
 import com.x64technology.linex.services.SocketManager;
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private void setCallbacks() {
         mainBinding.searchBar.setNavigationOnClickListener(view -> mainBinding.drawerLayout.open());
 
-        mainBinding.floating.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, NewChat.class)));
+        mainBinding.floating.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, NewContact.class)));
 
         chatViewModel.getChats().observe(this, chats -> chatsAdapter.setChats(chats));
 
