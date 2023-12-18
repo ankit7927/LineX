@@ -13,6 +13,7 @@ import com.x64technology.linex.databinding.ActivityMainBinding;
 import com.x64technology.linex.screens.Auth;
 import com.x64technology.linex.screens.ContactList;
 import com.x64technology.linex.screens.NewContact;
+import com.x64technology.linex.screens.Profile;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     Socket socket;
     SocketManager socketManager;
     UserPreference userPreference;
+    Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +62,11 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding.navigationView.setNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.menu_contacts) {
-                startActivity(new Intent(MainActivity.this, ContactList.class));
+                intent = new Intent(MainActivity.this, ContactList.class);
+                startActivity(intent);
+            } else if (item.getItemId() == R.id.menu_profile) {
+                intent = new Intent(MainActivity.this, Profile.class);
+                startActivity(intent);
             }
             mainBinding.drawerLayout.close();
             return false;

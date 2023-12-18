@@ -29,7 +29,6 @@
     <string name="socket_host">http://192.168.43.30:3000</string>
 
 
-
     <string name="event_contact_request">contact request</string>
     <string name="event_request_accepted">request_accepted</string>
     <string name="event_request_rejected">request_rejected</string>

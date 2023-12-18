@@ -3,6 +3,7 @@ package com.x64technology.linex.screens;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,11 +11,14 @@ import com.x64technology.linex.R;
 import com.x64technology.linex.adapters.ContactAdapter;
 import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityContactListBinding;
+import com.x64technology.linex.models.Contact;
+import com.x64technology.linex.utils.ContactProfile;
 
-public class ContactList extends AppCompatActivity {
+public class ContactList extends AppCompatActivity implements ContactProfile {
 
     ActivityContactListBinding contactListBinding;
     DBService dbService;
+    Intent intent;
     ContactAdapter contactAdapter;
 
     @Override
@@ -31,7 +35,7 @@ public class ContactList extends AppCompatActivity {
 
     private void initVars() {
         dbService = new DBService(this);
-        contactAdapter = new ContactAdapter(this, dbService.getContacts());
+        contactAdapter = new ContactAdapter(this, this, dbService.getContacts());
 
         //contactAdapter.setContacts(dbService.getContacts());
 
@@ -41,5 +45,12 @@ public class ContactList extends AppCompatActivity {
 
     private void setCallbacks() {
         contactListBinding.searchBar.setNavigationOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+    }
+
+    @Override
+    public void onContactClicked(Contact contact) {
+        intent = new Intent(this, Profile.class);
+        intent.putExtra("contact", contact);
+        startActivity(intent);
     }
 }
