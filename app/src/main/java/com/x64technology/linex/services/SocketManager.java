@@ -52,9 +52,6 @@ public class SocketManager {
       socket.on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
           @Override
           public void call(Object... args) {
-              JSONObject jsonObject = (JSONObject) args[0];
-              System.out.println(args[0]);
-              System.out.println(jsonObject);
               System.out.println("got connection error");
           }
       });
@@ -62,14 +59,14 @@ public class SocketManager {
       socket.on(context.getString(R.string.event_contact_request), args -> {
           System.out.println("got connection req");
           JSONObject jsonObject = (JSONObject) args[0];
-          String senderUsername, senderDp;
+          System.out.println(args[0]);
+          String senderUsername;
           try {
-              senderUsername = jsonObject.getString("senderUsername");
-              senderDp = jsonObject.getString("senderDpLink");
+              senderUsername = jsonObject.getString("sender_username");
           } catch (JSONException e) {
               throw new RuntimeException(e);
           }
-          dbService.insertContact(Constants.STR_UNKNOWN, senderUsername, Constants.STR_UNKNOWN, senderDp, Constants.REQUEST_RECEIVED);
+          dbService.insertContact(Constants.STR_UNKNOWN, senderUsername, Constants.STR_UNKNOWN, "nodp", Constants.REQUEST_RECEIVED);
       });
 
       socket.on(context.getString(R.string.event_request_accepted), args -> System.out.println(args[0]));

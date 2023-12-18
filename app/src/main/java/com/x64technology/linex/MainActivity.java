@@ -13,7 +13,6 @@ import com.x64technology.linex.databinding.ActivityMainBinding;
 import com.x64technology.linex.screens.Auth;
 import com.x64technology.linex.screens.ContactList;
 import com.x64technology.linex.screens.NewContact;
-import com.x64technology.linex.services.AppPreference;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 
