@@ -1,7 +1,21 @@
-package com.x64technology.linex.database.noroom;
+package com.x64technology.linex.utils;
 
-public class DBStrings {
+public class Constants {
 
+    // preference string
+    public static final String USER_PREFERENCE = "user_preference";
+    public static final String APP_PREFERENCE = "app_preference";
+    public static final String STR_USERNAME = "username";
+    public static final String STR_NAME = "name";
+    public static final String STR_USERID = "userid";
+    public static final String STR_DPLINK = "dplink";
+    public static final String STR_TOKEN = "token";
+    public static final String STR_UNKNOWN = "unknown";
+    public static final String STR_CURRENT_CHAT = "current_chat";
+
+
+
+    // database string
     public static final int DB_VERSION = 1;
     public static final String  DB_NAME = "LineXDB";
 
@@ -30,6 +44,7 @@ public class DBStrings {
 
 
 
+    // query strings
     public static final String CONTACT_TABLE_QUERY = String.format(
             "CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
             CONTACT_TABLE_NAME, CONTACT_ID, CONTACT_NAME,CONTACT_USERNAME, CONTACT_USER_ID, CONTACT_DP_IMAGE_LINK, CONTACT_REQUEST_TYPE

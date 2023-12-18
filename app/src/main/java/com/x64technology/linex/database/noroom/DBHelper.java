@@ -6,21 +6,23 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.x64technology.linex.utils.Constants;
+
 public class DBHelper extends SQLiteOpenHelper {
 
 
     public DBHelper(@Nullable Context context) {
-        super(context, DBStrings.DB_NAME, null, DBStrings.DB_VERSION);
+        super(context, Constants.DB_NAME, null, Constants.DB_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(DBStrings.CONTACT_TABLE_QUERY);
+        sqLiteDatabase.execSQL(Constants.CONTACT_TABLE_QUERY);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL(DBStrings.DROP_CONTACT_TABLE_QUERY);
+        sqLiteDatabase.execSQL(Constants.DROP_CONTACT_TABLE_QUERY);
         onCreate(sqLiteDatabase);
     }
 }

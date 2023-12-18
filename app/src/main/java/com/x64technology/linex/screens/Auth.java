@@ -13,7 +13,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.x64technology.linex.MainActivity;
 import com.x64technology.linex.databinding.ActivityAuthBinding;
-import com.x64technology.linex.services.PreferenceManager;
+import com.x64technology.linex.services.AppPreference;
+import com.x64technology.linex.services.UserPreference;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +22,7 @@ import org.json.JSONObject;
 public class Auth extends AppCompatActivity {
     ActivityAuthBinding activityAuthBinding;
     ProgressDialog progressDialog;
-    PreferenceManager preferenceManager;
+    UserPreference userPreference;
     boolean login = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class Auth extends AppCompatActivity {
         activityAuthBinding = ActivityAuthBinding.inflate(getLayoutInflater());
         setContentView(activityAuthBinding.getRoot());
 
-        preferenceManager = new PreferenceManager(this);
+        userPreference = new UserPreference(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("please wait");
         progressDialog.setTitle("authenticating");
@@ -47,15 +48,15 @@ public class Auth extends AppCompatActivity {
         });
 
         activityAuthBinding.btnContinue.setOnClickListener(view -> {
-            String uname = activityAuthBinding.inpUsername.getText().toString();
-            String pword = activityAuthBinding.inpPassword.getText().toString();
+            String uname = activityAuthBinding.inpUsername.getEditableText().toString();
+            String password = activityAuthBinding.inpPassword.getEditableText().toString();
 
-            makeCall(uname, pword);
+            makeCall(uname, password);
 
         });
     }
 
-    private void makeCall(String uname, String pword) {
+    private void makeCall(String uname, String password) {
         progressDialog.show();
         String url = login ? "http://192.168.43.30:3000/auth/signin" : "http://192.168.43.30:3000/auth/signup";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -63,7 +64,7 @@ public class Auth extends AppCompatActivity {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("username", uname);
-            jsonObject.put("password", pword);
+            jsonObject.put("password", password);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -75,7 +76,12 @@ public class Auth extends AppCompatActivity {
                 jsonObject,
                 response -> {
                     try {
-                        preferenceManager.saveCred(response.getString("username"),response.getString("id"),response.getString("token"));
+                        userPreference.saveUserData(response.getString("username"),
+                                response.getString("id"),
+                                "some random name",
+                                "some dp link");
+                        userPreference.saveToken(response.getString("token"));
+
                         progressDialog.dismiss();
                         startActivity(new Intent(Auth.this, MainActivity.class));
                         finish();

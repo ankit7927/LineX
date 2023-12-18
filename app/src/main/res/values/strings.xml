@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">LineX</string>
+    <string name="user_preference">user_preference</string>
+    <string name="app_preference">app_preference</string>
+    <string name="str_username">username</string>
+    <string name="str_name">name</string>
+    <string name="str_user_id">userid</string>
+    <string name="str_user_dp_link">userDpLink</string>
+    <string name="str_token">token</string>
+    <string name="str_unknown">unknown</string>
+    <string name="str_current_chat">current_chat</string>
+    <string name="str_db_name">LineXDB</string>
+    <string name="col_id">id</string>
+    <string name="col_sender_id">sender_id</string>
+    <string name="col_sender_username">sender_username</string>
+    <string name="col_content">content</string>
+    <string name="col_time">time</string>
+    <string name="contact_table_name">contact</string>
+    <string name="contact_id">contact_id</string>
+    <string name="contact_name">name</string>
+    <string name="contact_username">username</string>
+    <string name="contact_user_id">user_id</string>
+    <string name="contact_dp_link">dp_link</string>
+    <string name="contact_req_type">request_type</string>
+    <string name="req_received">received</string>
+    <string name="req_sent">sent</string>
+    <string name="req_accepted">accepted</string>
+    <string name="req_rejected">rejected</string>
+    <string name="socket_host">http://192.168.43.30:3000</string>
+
+
+
+    <string name="event_contact_request">contact request</string>
+    <string name="event_request_accepted">request_accepted</string>
+    <string name="event_request_rejected">request_rejected</string>
+
 </resources>

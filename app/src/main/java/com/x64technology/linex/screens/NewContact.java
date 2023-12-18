@@ -8,9 +8,10 @@ import android.widget.Toast;
 
 import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.noroom.DBService;
-import com.x64technology.linex.database.noroom.DBStrings;
+import com.x64technology.linex.services.UserPreference;
+import com.x64technology.linex.utils.Constants;
 import com.x64technology.linex.databinding.ActivityNewChatBinding;
-import com.x64technology.linex.services.PreferenceManager;
+import com.x64technology.linex.services.AppPreference;
 import com.x64technology.linex.services.SocketManager;
 
 import org.json.JSONException;
@@ -22,7 +23,7 @@ public class NewContact extends AppCompatActivity {
     ActivityNewChatBinding newChatBinding;
     ChatViewModel chatViewModel;
     DBService dbService;
-    PreferenceManager preferenceManager;
+    UserPreference userPreference;
     Socket socket;
 
     @Override
@@ -37,7 +38,7 @@ public class NewContact extends AppCompatActivity {
     }
 
     private void initVars() {
-        preferenceManager = new PreferenceManager(this);
+        userPreference = new UserPreference(this);
 
         socket = SocketManager.socket;
 
@@ -49,12 +50,12 @@ public class NewContact extends AppCompatActivity {
         newChatBinding.requestBtn.setOnClickListener(view -> {
             String username = newChatBinding.usernameInp.getEditableText().toString();
 
-            dbService.insertContact("unknown", username, "unknown", "unknown", DBStrings.REQUEST_SENT);
+            dbService.insertContact(Constants.STR_UNKNOWN, username, Constants.STR_UNKNOWN, Constants.STR_UNKNOWN, Constants.REQUEST_SENT);
 
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("to", username);
-                jsonObject.put("senderUsername", preferenceManager.sharedPreferences.getString("username", ""));
+                jsonObject.put("senderUsername", userPreference.userPref.getString("username", ""));
                 jsonObject.put("senderDpLink", "somwlink");
             } catch (JSONException e) {
                 throw new RuntimeException(e);

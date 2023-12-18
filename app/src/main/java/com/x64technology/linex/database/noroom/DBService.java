@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.models.Message;
+import com.x64technology.linex.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,29 +25,29 @@ public class DBService {
     public void newChat(String tableName) {
         writableDb.execSQL(
                 String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-                        tableName, DBStrings.ID, DBStrings.SENDER_ID, DBStrings.SENDER_USERNAME, DBStrings.CONTENT, DBStrings.TIME)
+                        tableName, Constants.ID, Constants.SENDER_ID, Constants.SENDER_USERNAME, Constants.CONTENT, Constants.TIME)
         );
     }
 
     public void insertContact(String name, String username, String userId, String dp, String reqType) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DBStrings.CONTACT_NAME, name);
-        contentValues.put(DBStrings.CONTACT_USERNAME, username);
-        contentValues.put(DBStrings.CONTACT_USER_ID, userId);
-        contentValues.put(DBStrings.CONTACT_DP_IMAGE_LINK, dp);
-        contentValues.put(DBStrings.CONTACT_REQUEST_TYPE, reqType);
+        contentValues.put(Constants.CONTACT_NAME, name);
+        contentValues.put(Constants.CONTACT_USERNAME, username);
+        contentValues.put(Constants.CONTACT_USER_ID, userId);
+        contentValues.put(Constants.CONTACT_DP_IMAGE_LINK, dp);
+        contentValues.put(Constants.CONTACT_REQUEST_TYPE, reqType);
 
-        writableDb.insert(DBStrings.CONTACT_TABLE_NAME, null, contentValues);
+        writableDb.insert(Constants.CONTACT_TABLE_NAME, null, contentValues);
     }
 
 
     public void insertMsg(String tableName, Message message) {
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(DBStrings.SENDER_ID, message.senderId);
-        contentValues.put(DBStrings.SENDER_USERNAME, message.senderUsername);
-        contentValues.put(DBStrings.CONTENT, message.content);
-        contentValues.put(DBStrings.TIME, message.time);
+        contentValues.put(Constants.SENDER_ID, message.senderId);
+        contentValues.put(Constants.SENDER_USERNAME, message.senderUsername);
+        contentValues.put(Constants.CONTENT, message.content);
+        contentValues.put(Constants.TIME, message.time);
 
         writableDb.insert(tableName, null, contentValues);
     }

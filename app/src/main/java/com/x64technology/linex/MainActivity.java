@@ -13,8 +13,9 @@ import com.x64technology.linex.databinding.ActivityMainBinding;
 import com.x64technology.linex.screens.Auth;
 import com.x64technology.linex.screens.ContactList;
 import com.x64technology.linex.screens.NewContact;
-import com.x64technology.linex.services.PreferenceManager;
+import com.x64technology.linex.services.AppPreference;
 import com.x64technology.linex.services.SocketManager;
+import com.x64technology.linex.services.UserPreference;
 
 import io.socket.client.Socket;
 
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding mainBinding;
     Socket socket;
     SocketManager socketManager;
-    PreferenceManager preferenceManager;
+    UserPreference userPreference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,11 +38,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initVars() {
-        preferenceManager = new PreferenceManager(this);
+        userPreference = new UserPreference(this);
 
-        socketManager = new SocketManager();
-        socket = socketManager.initSocket(preferenceManager.sharedPreferences.getString("token", ""));
-        SocketManager.addSocketListeners(socket);
+        socketManager = new SocketManager(this);
+        socket = socketManager.initSocket(userPreference.userPref.getString("token", ""));
+        socketManager.addSocketListeners(socket);
         socket.connect();
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
@@ -71,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        if (new PreferenceManager(this)
-                .sharedPreferences.getString("username", "").equals("")) {
+        if (new UserPreference(this)
+                .userPref.getString(getString(R.string.str_username), "").equals("")) {
             startActivity(new Intent(this, Auth.class));
             finish();
         }
@@ -84,6 +85,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (socket == null) return;
         socket.disconnect();
-        SocketManager.removeSocketListeners(socket);
+        socketManager.removeSocketListeners(socket);
     }
 }
