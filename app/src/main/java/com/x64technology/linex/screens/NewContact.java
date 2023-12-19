@@ -1,22 +1,20 @@
 package com.x64technology.linex.screens;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.x64technology.linex.R;
 import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.database.noroom.DBService;
+import com.x64technology.linex.databinding.ActivityNewContactBinding;
 import com.x64technology.linex.models.Contact;
+import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
-import com.x64technology.linex.databinding.ActivityNewChatBinding;
-import com.x64technology.linex.services.AppPreference;
-import com.x64technology.linex.services.SocketManager;
-import com.x64technology.linex.utils.EnDecoder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +22,7 @@ import org.json.JSONObject;
 import io.socket.client.Socket;
 
 public class NewContact extends AppCompatActivity {
-    ActivityNewChatBinding newChatBinding;
+    ActivityNewContactBinding newContactBinding;
     ChatViewModel chatViewModel;
     ContactViewModel contactViewModel;
     DBService dbService;
@@ -34,8 +32,8 @@ public class NewContact extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        newChatBinding = ActivityNewChatBinding.inflate(getLayoutInflater());
-        setContentView(newChatBinding.getRoot());
+        newContactBinding = ActivityNewContactBinding.inflate(getLayoutInflater());
+        setContentView(newContactBinding.getRoot());
 
         initVars();
 
@@ -53,8 +51,8 @@ public class NewContact extends AppCompatActivity {
     }
 
     private void setCallBacks() {
-        newChatBinding.requestBtn.setOnClickListener(view -> {
-            String userId_code = newChatBinding.usernameInp.getEditableText().toString();
+        newContactBinding.requestBtn.setOnClickListener(view -> {
+            String userId_code = newContactBinding.usernameInp.getEditableText().toString();
             // userId_code = EnDecoder.DecodeUserId(Integer.parseInt(userId_code));
 
 
