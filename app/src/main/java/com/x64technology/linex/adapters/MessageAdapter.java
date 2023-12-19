@@ -40,7 +40,7 @@ public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.Message
         holder.messageBinding.msgContent.setText(message.content);
         holder.messageBinding.msgDate.setText(message.time);
 
-        if (message.senderId.equals("")) {
+        if (message.from.equals("")) {
             holder.messageBinding.layout.setGravity(Gravity.END);
             holder.messageBinding.msgCard.setCardElevation(2);
         } else {

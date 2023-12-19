@@ -2,7 +2,7 @@
     <string name="app_name">LineX</string>
     <string name="user_preference">user_preference</string>
     <string name="app_preference">app_preference</string>
-    <string name="str_username">username</string>
+    <string name="str_email">email</string>
     <string name="str_name">name</string>
     <string name="str_user_id">userid</string>
     <string name="str_user_dp_link">userDpLink</string>
@@ -32,5 +32,10 @@
     <string name="event_contact_request">contact request</string>
     <string name="event_request_accepted">request_accepted</string>
     <string name="event_request_rejected">request_rejected</string>
+
+    <string name="id">id</string>
+    <string name="to">to</string>
+    <string name="from">from</string>
+
 
 </resources>

@@ -16,8 +16,8 @@ public class UserPreference {
         editor = userPref.edit();
     }
 
-    public void saveUserData(String username, String uid, String name, String dpLink) {
-        editor.putString(Constants.STR_USERNAME, username);
+    public void saveUserData(String email, String uid, String name, String dpLink) {
+        editor.putString(Constants.STR_EMAIL, email);
         editor.putString(Constants.STR_USERID, uid);
         editor.putString(Constants.STR_NAME, name);
         editor.putString(Constants.STR_DPLINK, dpLink);

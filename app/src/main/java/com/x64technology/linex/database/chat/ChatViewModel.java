@@ -37,10 +37,6 @@ public class ChatViewModel extends AndroidViewModel {
         return chatRepo.getChatById(id);
     }
 
-    public Chat getChatByUsername(String username) {
-        return chatRepo.getChatByUsername(username);
-    }
-
     public Chat getChatByUserId(String userid) {
         return chatRepo.getChatByUserId(userid);
     }

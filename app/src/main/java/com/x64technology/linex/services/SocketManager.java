@@ -2,8 +2,13 @@ package com.x64technology.linex.services;
 
 import android.content.Context;
 
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+
 import com.x64technology.linex.R;
+import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.database.noroom.DBService;
+import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.utils.Constants;
 
 import org.json.JSONException;
@@ -22,10 +27,13 @@ public class SocketManager {
     Context context;
     IO.Options options;
     DBService dbService;
+    ContactViewModel contactViewModel;
     public static Socket socket;
 
     public SocketManager(Context context) {
         this.context = context;
+        contactViewModel = new ViewModelProvider((ViewModelStoreOwner) context)
+                .get(ContactViewModel.class);
         dbService = new DBService(context);
     }
 
@@ -57,16 +65,18 @@ public class SocketManager {
       });
 
       socket.on(context.getString(R.string.event_contact_request), args -> {
-          System.out.println("got connection req");
           JSONObject jsonObject = (JSONObject) args[0];
-          System.out.println(args[0]);
-          String senderUsername;
+          Contact contact = new Contact();
           try {
-              senderUsername = jsonObject.getString("sender_username");
+              contact.userId = jsonObject.getString("from");
+              contact.userDp = jsonObject.getString("pic");
+              contact.name = Constants.STR_UNKNOWN;
+              contact.reqType = Constants.REQUEST_RECEIVED;
+
           } catch (JSONException e) {
               throw new RuntimeException(e);
           }
-          dbService.insertContact(Constants.STR_UNKNOWN, senderUsername, Constants.STR_UNKNOWN, "nodp", Constants.REQUEST_RECEIVED);
+          contactViewModel.insert(contact);
       });
 
       socket.on(context.getString(R.string.event_request_accepted), args -> System.out.println(args[0]));

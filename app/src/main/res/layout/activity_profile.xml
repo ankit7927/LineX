@@ -45,7 +45,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/pro_email"
+                android:id="@+id/pro_contact_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -81,7 +81,7 @@
                 android:text="connectd since / request received at / request sent at  / notification"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pro_email" />
+                app:layout_constraintTop_toBottomOf="@+id/pro_contact_code" />
 
             <Button
                 android:id="@+id/pro_req_accept"

@@ -16,6 +16,7 @@ import com.x64technology.linex.screens.NewContact;
 import com.x64technology.linex.screens.Profile;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
+import com.x64technology.linex.utils.Constants;
 
 import io.socket.client.Socket;
 
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         if (new UserPreference(this)
-                .userPref.getString(getString(R.string.str_username), "").equals("")) {
+                .userPref.getString(Constants.STR_USERID, "").equals("")) {
             startActivity(new Intent(this, Auth.class));
             finish();
         }

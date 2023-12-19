@@ -5,7 +5,7 @@ public class Constants {
     // preference string
     public static final String USER_PREFERENCE = "user_preference";
     public static final String APP_PREFERENCE = "app_preference";
-    public static final String STR_USERNAME = "username";
+    public static final String STR_EMAIL = "email";
     public static final String STR_NAME = "name";
     public static final String STR_USERID = "userid";
     public static final String STR_DPLINK = "dplink";
@@ -16,12 +16,10 @@ public class Constants {
 
 
     // database string
-    public static final int DB_VERSION = 1;
-    public static final String  DB_NAME = "LineXDB";
 
     public static final String ID = "id";
-    public static final String SENDER_ID = "sender_id";
-    public static final String SENDER_USERNAME = "sender_username";
+    public static final String TO = "to";
+    public static final String FROM = "from";
     public static final String CONTENT = "content";
     public static final String TIME = "time";
 
@@ -32,7 +30,7 @@ public class Constants {
     public static final String CONTACT_NAME = "name";
     public static final String CONTACT_USERNAME = "username";
     public static final String CONTACT_USER_ID = "user_id";
-    public static final String CONTACT_DP_IMAGE_LINK = "dp_image_link";
+    public static final String CONTACT_DP_IMAGE = "dp_image";
     public static final String CONTACT_REQUEST_TYPE = "request_type";
 
 
@@ -46,8 +44,8 @@ public class Constants {
 
     // query strings
     public static final String CONTACT_TABLE_QUERY = String.format(
-            "CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-            CONTACT_TABLE_NAME, CONTACT_ID, CONTACT_NAME,CONTACT_USERNAME, CONTACT_USER_ID, CONTACT_DP_IMAGE_LINK, CONTACT_REQUEST_TYPE
+            "CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
+            CONTACT_TABLE_NAME, CONTACT_ID, CONTACT_NAME, CONTACT_USER_ID, CONTACT_DP_IMAGE, CONTACT_REQUEST_TYPE
     );
 
     public static final String DROP_CONTACT_TABLE_QUERY = String.format(

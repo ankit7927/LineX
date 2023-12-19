@@ -10,9 +10,11 @@ import com.x64technology.linex.utils.Constants;
 
 public class DBHelper extends SQLiteOpenHelper {
 
+    public static final int DB_VERSION = 1;
+    public static final String  DB_NAME = "LineXDB";
 
     public DBHelper(@Nullable Context context) {
-        super(context, Constants.DB_NAME, null, Constants.DB_VERSION);
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override

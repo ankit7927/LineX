@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.x64technology.linex.R;
 import com.x64technology.linex.databinding.LayoutContactBinding;
 import com.x64technology.linex.models.Contact;
+import com.x64technology.linex.utils.ContactDiffUtil;
 import com.x64technology.linex.utils.ContactProfile;
+import com.x64technology.linex.utils.MessageDiffUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +25,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     ContactProfile contactProfile;
     List<Contact> contacts = new ArrayList<>();
 
-    public ContactAdapter(Context context, ContactProfile contactProfile1, List<Contact> contacts1) {
+    public ContactAdapter(Context context, ContactProfile contactProfile1) {
         this.context = context;
         this.contactProfile = contactProfile1;
-        contacts.addAll(contacts1);
     }
 
     @NonNull
@@ -40,20 +41,24 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = contacts.get(position);
         holder.contactBinding.contactName.setText(contact.name);
-        holder.contactBinding.contactUsername.setText(contact.username);
         holder.contactBinding.requestType.setText(contact.reqType);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                contactProfile.onContactClicked(contact);
-            }
-        });
+        holder.itemView.setOnClickListener(view -> contactProfile.onContactClicked(contact));
     }
 
     @Override
     public int getItemCount() {
         return contacts.size();
+    }
+
+    public void setContacts(List<Contact> newCont) {
+        ContactDiffUtil contDiff = new ContactDiffUtil(contacts, newCont);
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(contDiff);
+
+        contacts.clear();
+        contacts.addAll(newCont);
+
+        result.dispatchUpdatesTo(this);
     }
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder {

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -35,6 +36,8 @@ public class Auth extends AppCompatActivity {
         progressDialog.setMessage("please wait");
         progressDialog.setTitle("authenticating");
 
+        activityAuthBinding.namelayout.setVisibility(login ? View.GONE : View.VISIBLE);
+
         setCallbacks();
     }
 
@@ -45,26 +48,30 @@ public class Auth extends AppCompatActivity {
             activityAuthBinding.heading.setText(login? "Welcome Back" : "Hello There");
             activityAuthBinding.subheading.setText(login? "nice to see you again" : "thanks for choosing us.");
             activityAuthBinding.btnAuthChange.setText(login? "signup" : "login");
+
+            activityAuthBinding.namelayout.setVisibility(login ? View.GONE : View.VISIBLE);
         });
 
         activityAuthBinding.btnContinue.setOnClickListener(view -> {
-            String uname = activityAuthBinding.inpUsername.getEditableText().toString();
+            String email = activityAuthBinding.inpEmail.getEditableText().toString();
+            String name = activityAuthBinding.inpName.getEditableText().toString();
             String password = activityAuthBinding.inpPassword.getEditableText().toString();
 
-            makeCall(uname, password);
+            makeCall(name, email, password);
 
         });
     }
 
-    private void makeCall(String uname, String password) {
+    private void makeCall(String name, String email, String password) {
         progressDialog.show();
         String url = login ? "http://192.168.43.30:3000/auth/signin" : "http://192.168.43.30:3000/auth/signup";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("username", uname);
+            jsonObject.put("email", email);
             jsonObject.put("password", password);
+            if (!login) jsonObject.put("name", name);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -76,7 +83,8 @@ public class Auth extends AppCompatActivity {
                 jsonObject,
                 response -> {
                     try {
-                        userPreference.saveUserData(response.getString("username"),
+                        userPreference.saveUserData(
+                                response.getString("email"),
                                 response.getString("id"),
                                 "some random name",
                                 "some dp link");
@@ -92,10 +100,10 @@ public class Auth extends AppCompatActivity {
                 error -> {
                     error.printStackTrace();
                     progressDialog.dismiss();
-                    activityAuthBinding.inpUsername.setText("");
+                    activityAuthBinding.inpEmail.setText("");
                     String err = new String(error.networkResponse.data);
                     if (error.networkResponse.statusCode == 404)
-                        activityAuthBinding.unameLayout.setError(err);
+                        activityAuthBinding.emailLayout.setError(err);
                     else if (error.networkResponse.statusCode == 403)
                         activityAuthBinding.pwordLayout.setError(err);
                     else Toast.makeText(Auth.this, "Server Error", Toast.LENGTH_SHORT).show();

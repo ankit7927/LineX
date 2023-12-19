@@ -15,7 +15,7 @@ public abstract class ChatDatabase extends RoomDatabase {
     public static ChatDatabase getInstance(final Context context) {
         if (Instance == null) {
             synchronized (ChatDatabase.class) {
-                Instance = Room.databaseBuilder(context, ChatDatabase.class,"chats_database")
+                Instance = Room.databaseBuilder(context, ChatDatabase.class,"chats")
                         .allowMainThreadQueries()
                         .build();
             }

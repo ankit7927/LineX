@@ -26,13 +26,9 @@ public interface ChatDAO {
     @Delete
     void delete(Chat chat);
 
-    @Query("SELECT * FROM chats WHERE chatId=:id")
+    @Query("SELECT * FROM chats WHERE id=:id")
     Chat getChatById(String id);
 
-    @Query("SELECT * FROM chats WHERE chatUsername=:username")
-    Chat getChatByUsername(String username);
-
-    @Query("SELECT * FROM chats WHERE chatUserId=:userid")
-    Chat getChatByUserId(String userid);
-
+    @Query("SELECT * FROM chats WHERE userid=:userId")
+    Chat getChatByUserId(String userId);
 }

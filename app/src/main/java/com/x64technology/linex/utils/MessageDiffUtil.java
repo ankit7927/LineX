@@ -36,10 +36,6 @@ public class MessageDiffUtil extends DiffUtil.Callback {
         Message old = oldMessages.get(oldItemPosition);
         Message nMs = newMessages.get(newItemPosition);
 
-        return old.id == nMs.id &&
-                old.content.equals(nMs.content) &&
-                old.senderId.equals(nMs.senderId) &&
-                old.senderUsername.equals(nMs.senderUsername) &&
-                old.time.equals(nMs.time);
+        return old.equals(nMs);
     }
 }

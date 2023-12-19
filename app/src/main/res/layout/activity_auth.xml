@@ -37,21 +37,39 @@
         app:layout_constraintTop_toBottomOf="@+id/heading" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/unameLayout"
-        android:layout_width="0dp"
+        android:id="@+id/namelayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subheading">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inp_username"
+            android:id="@+id/inp_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="username" />
+            android:hint="name" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/emailLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/namelayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inp_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="email" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -63,7 +81,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/unameLayout">
+        app:layout_constraintTop_toBottomOf="@+id/emailLayout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inp_password"

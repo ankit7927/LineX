@@ -28,7 +28,7 @@ public class ChatDiffUtil extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        return oldChats.get(oldItemPosition).chatId == newChats.get(newItemPosition).chatId;
+        return oldChats.get(oldItemPosition).id == newChats.get(newItemPosition).id;
     }
 
     @Override

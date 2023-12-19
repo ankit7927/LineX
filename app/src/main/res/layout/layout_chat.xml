@@ -34,7 +34,7 @@
         </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
         <TextView
-            android:id="@+id/username_textview"
+            android:id="@+id/name_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -60,7 +60,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/circularRevealCardView"
             app:layout_constraintEnd_toStartOf="@+id/msg_count_textview"
             app:layout_constraintStart_toEndOf="@+id/circularRevealCardView"
-            app:layout_constraintTop_toBottomOf="@+id/username_textview" />
+            app:layout_constraintTop_toBottomOf="@+id/name_textview" />
 
         <TextView
             android:id="@+id/date_textview"

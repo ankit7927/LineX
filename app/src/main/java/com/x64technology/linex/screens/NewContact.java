@@ -6,13 +6,17 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.x64technology.linex.R;
 import com.x64technology.linex.database.chat.ChatViewModel;
+import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.database.noroom.DBService;
+import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
 import com.x64technology.linex.databinding.ActivityNewChatBinding;
 import com.x64technology.linex.services.AppPreference;
 import com.x64technology.linex.services.SocketManager;
+import com.x64technology.linex.utils.EnDecoder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +26,7 @@ import io.socket.client.Socket;
 public class NewContact extends AppCompatActivity {
     ActivityNewChatBinding newChatBinding;
     ChatViewModel chatViewModel;
+    ContactViewModel contactViewModel;
     DBService dbService;
     UserPreference userPreference;
     Socket socket;
@@ -43,24 +48,30 @@ public class NewContact extends AppCompatActivity {
         socket = SocketManager.socket;
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
+        contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
         dbService = new DBService(this);
     }
 
     private void setCallBacks() {
         newChatBinding.requestBtn.setOnClickListener(view -> {
-            String username = newChatBinding.usernameInp.getEditableText().toString();
+            String userId_code = newChatBinding.usernameInp.getEditableText().toString();
+            // userId_code = EnDecoder.DecodeUserId(Integer.parseInt(userId_code));
 
-            dbService.insertContact(Constants.STR_UNKNOWN, username, Constants.STR_UNKNOWN, Constants.STR_UNKNOWN, Constants.REQUEST_SENT);
+
+
+            Contact contact = new Contact(Constants.STR_UNKNOWN, userId_code, Constants.STR_UNKNOWN, Constants.REQUEST_SENT);
+            contactViewModel.insert(contact);
 
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("to", username);
-                jsonObject.put("sender_username", userPreference.userPref.getString("username", ""));
+                jsonObject.put("to", userId_code);
+                jsonObject.put("from", userPreference.userPref.getString("username", ""));
+                jsonObject.put("pic", userPreference.userPref.getString("username", ""));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
 
-            socket.emit("contact request", jsonObject);
+            socket.emit(getString(R.string.event_contact_request), jsonObject);
             Toast.makeText(NewContact.this, "contact request sent", Toast.LENGTH_SHORT).show();
             finish();
         });

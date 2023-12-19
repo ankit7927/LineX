@@ -10,35 +10,21 @@ import java.util.Objects;
 @Entity(tableName = "chats")
 public class Chat implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    public int chatId;
-    public String messageTableName;
-    public String chatUsername;
-    public String chatUserId;
-    public String room;
-    public String lastMessage;
-    public int unreadSmgCount;
+    public int id;
+    public String name;
+    public String userid;
+    public String profilePic;
+    public String lastMsg;
+    public String lastMsgTime;
+    public int unreadCount;
 
-    public Chat(String messageTableName, String chatUsername, String chatUserId, String room, String lastMessage, int unreadSmgCount) {
-        this.messageTableName = messageTableName;
-        this.chatUsername = chatUsername;
-        this.chatUserId = chatUserId;
-        this.room = room;
-        this.lastMessage = lastMessage;
-        this.unreadSmgCount = unreadSmgCount;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "Chat{" +
-                "chatId=" + chatId +
-                ", messageTableName='" + messageTableName + '\'' +
-                ", chatUsername='" + chatUsername + '\'' +
-                ", chatUserId='" + chatUserId + '\'' +
-                ", room='" + room + '\'' +
-                ", lastMessage='" + lastMessage + '\'' +
-                ", unreadSmgCount=" + unreadSmgCount +
-                '}';
+    public Chat(String name, String userid, String profilePic, String lastMsg, String lastMsgTime, int unreadCount) {
+        this.name = name;
+        this.userid = userid;
+        this.profilePic = profilePic;
+        this.lastMsg = lastMsg;
+        this.lastMsgTime = lastMsgTime;
+        this.unreadCount = unreadCount;
     }
 
     @Override
@@ -46,11 +32,11 @@ public class Chat implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Chat chat = (Chat) o;
-        return chatId == chat.chatId && unreadSmgCount == chat.unreadSmgCount && Objects.equals(messageTableName, chat.messageTableName) && Objects.equals(chatUsername, chat.chatUsername) && Objects.equals(chatUserId, chat.chatUserId) && Objects.equals(room, chat.room) && Objects.equals(lastMessage, chat.lastMessage);
+        return id == chat.id && unreadCount == chat.unreadCount && Objects.equals(name, chat.name) && Objects.equals(userid, chat.userid) && Objects.equals(profilePic, chat.profilePic) && Objects.equals(lastMsg, chat.lastMsg) && Objects.equals(lastMsgTime, chat.lastMsgTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(chatId, messageTableName, chatUsername, chatUserId, room, lastMessage, unreadSmgCount);
+        return Objects.hash(id, name, userid, profilePic, lastMsg, lastMsgTime, unreadCount);
     }
 }

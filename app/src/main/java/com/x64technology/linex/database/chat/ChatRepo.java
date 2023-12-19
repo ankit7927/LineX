@@ -34,12 +34,8 @@ public class ChatRepo {
         return chatDAO.getChatById(id);
     }
 
-    public Chat getChatByUsername(String username) {
-        return chatDAO.getChatByUsername(username);
-    }
-
-    public Chat getChatByUserId(String userid) {
-        return chatDAO.getChatByUserId(userid);
+    public Chat getChatByUserId(String userId) {
+        return chatDAO.getChatByUserId(userId);
     }
 
 }

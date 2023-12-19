@@ -44,7 +44,7 @@ public class ChatScreen extends AppCompatActivity {
 
         dbService = new DBService(this);
 
-        messageAdapter = new MessageAdapter(this, dbService.getRangedChat(chat.messageTableName));
+        messageAdapter = new MessageAdapter(this, dbService.getRangedMessages(chat.userid));
 
 
         chatBinding.msgRecycler.setItemAnimator(null);
@@ -63,9 +63,11 @@ public class ChatScreen extends AppCompatActivity {
         chatBinding.sendBtn.setOnClickListener(view -> {
             String msg = chatBinding.msgBox.getEditableText().toString();
             String date = simpleDateFormat.format(Calendar.getInstance().getTime());
+            String to = "to_user_id";
+            String from = "from_user_id";
 
-            Message message = new Message("test", "temp", msg, date);
-            new ArrayList<Message>().add(message);
+
+            Message message = new Message(to, from, msg, date);
 
             tempMess.add(message);
             messageAdapter.setMessages(tempMess);
@@ -74,7 +76,7 @@ public class ChatScreen extends AppCompatActivity {
             chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
             tempMess.clear();
 
-            dbService.insertMsg(chat.messageTableName, message);
+            dbService.insertMsg(chat.userid, message);
             // emit on socket
         });
     }
