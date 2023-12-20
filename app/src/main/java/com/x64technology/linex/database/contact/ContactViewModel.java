@@ -25,19 +25,19 @@ public class ContactViewModel extends AndroidViewModel {
         contactRepo.insert(contact);
     }
 
-    void update(Contact contact) {
+    public void update(Contact contact) {
         contactRepo.update(contact);
     }
 
-    void delete(Contact contact) {
+    public void delete(Contact contact) {
         contactRepo.delete(contact);
     }
 
-    Contact getContactById(String id) {
+    public Contact getContactById(String id) {
         return contactRepo.getContactById(id);
     }
 
-    Contact getContactByUserId(String userId) {
+    public Contact getContactByUserId(String userId) {
         return contactRepo.getContactByUserId(userId);
     }
 }

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.x64technology.linex.R;
 import com.x64technology.linex.databinding.LayoutMessageBinding;
 import com.x64technology.linex.models.Message;
-import com.x64technology.linex.utils.MessageDiffUtil;
+import com.x64technology.linex.utils.diffUtils.MessageDiffUtil;
 
 import java.util.List;
 

@@ -25,9 +25,6 @@
             android:name=".screens.ChatScreen"
             android:exported="false" />
         <activity
-            android:name=".screens.NewContact"
-            android:exported="false" />
-        <activity
             android:name=".screens.Auth"
             android:exported="false" />
         <activity

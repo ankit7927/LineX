@@ -14,7 +14,7 @@ import com.x64technology.linex.R;
 import com.x64technology.linex.databinding.LayoutChatBinding;
 import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.screens.ChatScreen;
-import com.x64technology.linex.utils.ChatDiffUtil;
+import com.x64technology.linex.utils.diffUtils.ChatDiffUtil;
 
 import java.util.ArrayList;
 import java.util.List;

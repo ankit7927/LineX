@@ -12,9 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.x64technology.linex.R;
 import com.x64technology.linex.databinding.LayoutContactBinding;
 import com.x64technology.linex.models.Contact;
-import com.x64technology.linex.utils.ContactDiffUtil;
+import com.x64technology.linex.utils.diffUtils.ContactDiffUtil;
 import com.x64technology.linex.utils.ContactProfile;
-import com.x64technology.linex.utils.MessageDiffUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = contacts.get(position);
         holder.contactBinding.contactName.setText(contact.name);
-        holder.contactBinding.requestType.setText(contact.reqType);
+        holder.contactBinding.connectionCode.setText(contact.userId); // TODO change it with user id mask with cc
 
         holder.itemView.setOnClickListener(view -> contactProfile.onContactClicked(contact));
     }

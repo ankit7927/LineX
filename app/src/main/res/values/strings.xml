@@ -37,5 +37,11 @@
     <string name="to">to</string>
     <string name="from">from</string>
 
+    <string-array name="contact_types">
+        <item>All</item>
+        <item>Accepted</item>
+        <item>Rejected</item>
+        <item>Sent</item>
+    </string-array>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.x64technology.linex.utils;
+package com.x64technology.linex.utils.diffUtils;
 
 import androidx.recyclerview.widget.DiffUtil;
 
