@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     ChatsAdapter chatsAdapter;
     ActivityMainBinding mainBinding;
     Socket socket;
-    SocketManager socketManager;
     UserPreference userPreference;
     Intent intent;
     @Override
@@ -42,9 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private void initVars() {
         userPreference = new UserPreference(this);
 
-        socketManager = new SocketManager(this);
-        socket = socketManager.initSocket(userPreference.userPref.getString("token", ""));
-        socketManager.addSocketListeners(socket);
+        socket = SocketManager.initSocket(this, userPreference.userPref.getString("token", ""));
+        SocketManager.addSocketListeners();
         socket.connect();
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
@@ -89,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if (socket == null) return;
         socket.disconnect();
-        socketManager.removeSocketListeners(socket);
+        SocketManager.removeSocketListeners();
     }
 }

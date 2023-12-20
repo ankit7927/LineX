@@ -51,4 +51,8 @@ public class Constants {
     public static final String DROP_CONTACT_TABLE_QUERY = String.format(
             "DROP TABLE IF EXISTS %s", CONTACT_TABLE_NAME
     );
+
+    public static final String EVENT_CONTACT_REQUEST = "contact request";
+    public static final String EVENT_REQUEST_ACCEPTED = "request accepted";
+    public static final String EVENT_REQUEST_REJECTED = "request rejected";
 }

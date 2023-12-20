@@ -64,7 +64,7 @@ public class NewContact extends AppCompatActivity {
             try {
                 jsonObject.put("to", userId_code);
                 jsonObject.put("from", userPreference.userPref.getString("username", ""));
-                jsonObject.put("pic", userPreference.userPref.getString("username", ""));
+                jsonObject.put("pic", userPreference.userPref.getString("username", "link from fb user"));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
