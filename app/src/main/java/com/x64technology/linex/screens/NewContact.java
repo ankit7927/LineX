@@ -62,9 +62,10 @@ public class NewContact extends AppCompatActivity {
 
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("to", userId_code);
-                jsonObject.put("from", userPreference.userPref.getString("username", ""));
-                jsonObject.put("pic", userPreference.userPref.getString("username", "link from fb user"));
+                jsonObject.put(Constants.TO, userId_code);
+                jsonObject.put(Constants.FROM, userPreference.userPref.getString(Constants.STR_USERID, ""));
+                jsonObject.put(Constants.STR_NAME, userPreference.userPref.getString(Constants.STR_NAME, ""));
+                jsonObject.put(Constants.STR_DPLINK, userPreference.userPref.getString(Constants.STR_DPLINK, "link from fb user"));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }

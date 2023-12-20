@@ -18,7 +18,9 @@ import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
 
+import io.socket.client.Manager;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class MainActivity extends AppCompatActivity {
     ChatViewModel chatViewModel;

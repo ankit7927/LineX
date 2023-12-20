@@ -71,9 +71,9 @@ public class SocketManager {
           JSONObject jsonObject = (JSONObject) args[0];
           Contact contact = new Contact();
           try {
-              contact.userId = jsonObject.getString("from");
-              contact.userDp = jsonObject.getString("pic");
-              contact.name = Constants.STR_UNKNOWN;
+              contact.userId = jsonObject.getString(Constants.FROM);
+              contact.name = jsonObject.getString(Constants.STR_NAME);
+              contact.userDp = jsonObject.getString(Constants.STR_DPLINK);
               contact.reqType = Constants.REQUEST_RECEIVED;
 
           } catch (JSONException e) {
