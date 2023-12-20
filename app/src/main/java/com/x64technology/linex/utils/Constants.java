@@ -55,4 +55,5 @@ public class Constants {
     public static final String EVENT_CONTACT_REQUEST = "contact request";
     public static final String EVENT_REQUEST_ACCEPTED = "request accepted";
     public static final String EVENT_REQUEST_REJECTED = "request rejected";
+    public static final String EVENT_REQUEST_CANCELED = "request canceled";
 }

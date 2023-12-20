@@ -108,6 +108,7 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
 
             socket.emit(getString(R.string.event_contact_request), jsonObject);
             Toast.makeText(ContactList.this, "contact request sent", Toast.LENGTH_SHORT).show();
+            contactListBinding.inpUserid.getEditableText().clear();
         });
     }
 

@@ -82,9 +82,64 @@ public class SocketManager {
           contactViewModel.insert(contact);
       });
 
-      socket.on(Constants.EVENT_REQUEST_ACCEPTED, args -> System.out.println(args[0]));
+      socket.on(Constants.EVENT_REQUEST_ACCEPTED, new Emitter.Listener() {
+          @Override
+          public void call(Object... args) {
+              JSONObject jsonObject = (JSONObject) args[0];
+              String name, userid, dplink;
+              try {
+                  userid = jsonObject.getString(Constants.FROM);
+                  name = jsonObject.getString(Constants.STR_NAME);
+                  dplink = jsonObject.getString(Constants.STR_DPLINK);
+              } catch (JSONException e) {
+                  throw new RuntimeException(e);
+              }
 
-      socket.on(Constants.EVENT_REQUEST_REJECTED, args -> System.out.println(args[0]));
+              Contact contact = contactViewModel.getContactByUserId(userid);
+              if (contact != null) {
+                  contact.reqType = Constants.REQUEST_ACCEPTED;
+                  contact.name = name;
+                  contact.userDp = dplink;
+
+                  contactViewModel.update(contact);
+              }
+
+              // TODO create chat table and message table for this user
+          }
+      });
+
+      socket.on(Constants.EVENT_REQUEST_REJECTED, new Emitter.Listener() {
+          @Override
+          public void call(Object... args) {
+              JSONObject jsonObject = (JSONObject) args[0];
+              String userid;
+              try {
+                  userid = jsonObject.getString(Constants.FROM);
+              } catch (JSONException e) {
+                  throw new RuntimeException(e);
+              }
+              Contact contactByUserId = contactViewModel.getContactByUserId(userid);
+              contactByUserId.reqType = Constants.REQUEST_REJECTED;
+              contactViewModel.update(contactByUserId);
+              // TODO notify for this event
+          }
+      });
+
+      socket.on(Constants.EVENT_REQUEST_CANCELED, new Emitter.Listener() {
+          @Override
+          public void call(Object... args) {
+              System.out.println("event req canceled");
+              JSONObject jsonObject = (JSONObject) args[0];
+              String userid;
+              try {
+                  userid = jsonObject.getString(Constants.FROM);
+              } catch (JSONException e) {
+                  throw new RuntimeException(e);
+              }
+              Contact contactByUserId = contactViewModel.getContactByUserId(userid);
+              if (contactByUserId != null) contactViewModel.delete(contactByUserId);
+          }
+      });
   }
 
     public static void removeSocketListeners() {
