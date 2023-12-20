@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.x64technology.linex.adapters.ChatsAdapter;
 import com.x64technology.linex.database.chat.ChatViewModel;
+import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityMainBinding;
 import com.x64technology.linex.screens.Auth;
 import com.x64technology.linex.screens.ContactList;
@@ -16,10 +17,11 @@ import com.x64technology.linex.screens.Profile;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
+import com.x64technology.linex.utils.NewChatImpl;
 
 import io.socket.client.Socket;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NewChatImpl {
     ChatViewModel chatViewModel;
     ChatsAdapter chatsAdapter;
     ActivityMainBinding mainBinding;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         socket = SocketManager.initSocket(this, userPreference.userPref.getString("token", ""));
         SocketManager.addSocketListeners();
         socket.connect();
+        SocketManager.newChatImpl = this;
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         chatsAdapter = new ChatsAdapter(this);
@@ -92,5 +95,10 @@ public class MainActivity extends AppCompatActivity {
 
         socket.disconnect();
         SocketManager.removeSocketListeners();
+    }
+
+    @Override
+    public void createChat(String userid) {
+        new DBService(this).newChat(userid);
     }
 }

@@ -25,10 +25,8 @@ public class DBService {
     }
 
     public void newChat(String tableName) {
-        writableDb.execSQL(
-                String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)",
-                        tableName, Constants.ID, Constants.TO, Constants.FROM, Constants.CONTENT, Constants.TIME)
-        );
+        writableDb.execSQL(String.format(Constants.MESSAGE_TABLE_QUERY,
+                        tableName, Constants.ID, Constants.TO, Constants.FROM, Constants.CONTENT, Constants.TIME));
     }
 
     public void insertMsg(String tableName, Message message) {

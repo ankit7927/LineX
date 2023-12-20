@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.x64technology.linex.R;
 import com.x64technology.linex.database.contact.ContactViewModel;
+import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityProfileBinding;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.services.SocketManager;
@@ -30,6 +31,7 @@ public class Profile extends AppCompatActivity {
     ContactViewModel contactViewModel;
     Contact contact;
     Socket socket;
+    DBService dbService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class Profile extends AppCompatActivity {
 
         contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
         socket = SocketManager.socket;
+        dbService = new DBService(this);
     }
 
     private void setCallbacks() {
@@ -84,7 +87,7 @@ public class Profile extends AppCompatActivity {
                     contact.reqType = Constants.REQUEST_ACCEPTED;
                     contactViewModel.update(contact);
                     layoutUpdates();
-                    // TODO create chat table and message table for this user
+                    dbService.newChat(contact.userId);
                 }
             }
         });
