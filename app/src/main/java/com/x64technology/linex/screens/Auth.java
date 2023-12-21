@@ -64,7 +64,7 @@ public class Auth extends AppCompatActivity {
 
     private void makeCall(String name, String email, String password) {
         progressDialog.show();
-        String url = login ? "http://192.168.43.30:3000/auth/signin" : "http://192.168.43.30:3000/auth/signup";
+        String url = login ? "http://192.168.43.31:3000/auth/signin" : "http://192.168.43.31:3000/auth/signup";
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         JSONObject jsonObject = new JSONObject();

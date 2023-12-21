@@ -40,7 +40,7 @@ public class SocketManager {
         IO.Options options = new IO.Options();
         options.auth = test;
         try {
-            socket = IO.socket("http://192.168.43.30:3000", options);
+            socket = IO.socket("http://192.168.43.31:3000", options);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -112,13 +112,13 @@ public class SocketManager {
               message.content = jsonObject.getString(Constants.CONTENT);
               message.time = jsonObject.getString(Constants.TIME);
               message.sender = jsonObject.getString(Constants.SENDER);
-              message.receiver = Constants.RECEIVER;
+              message.receiver = jsonObject.getString(Constants.RECEIVER);
           } catch (JSONException e) {
               throw new RuntimeException(e);
           }
 
-          String activeUser = appPreference.appPref.getString(Constants.STR_ACTIVE_USER, ""); // TODO check active usr str
-          if (activeUser.equals(message.receiver)) chatInterFace.incomingMessage(message);
+          String activeUser = appPreference.appPref.getString(Constants.STR_ACTIVE_USER, "");
+          if (activeUser.equals(message.sender)) chatInterFace.incomingMessage(message);
           else mainInterFace.onIncomingMessage(message);
 
       });

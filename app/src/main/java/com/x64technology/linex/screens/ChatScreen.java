@@ -117,8 +117,6 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     protected void onStart() {
         super.onStart();
 
-
-
         socket = SocketManager.socket;
         SocketManager.chatInterFace = this;
         appPreference.saveActiveUser(chat != null ? chat.userid : "");
