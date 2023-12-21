@@ -5,14 +5,10 @@ import android.content.Context;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
-import com.google.android.material.search.SearchBar;
-import com.google.android.material.snackbar.Snackbar;
-import com.x64technology.linex.R;
 import com.x64technology.linex.database.contact.ContactViewModel;
-import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.utils.Constants;
-import com.x64technology.linex.utils.NewChatImpl;
+import com.x64technology.linex.utils.MainInterFace;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,12 +19,11 @@ import java.util.Map;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 
 public class SocketManager {
     static ContactViewModel contactViewModel;
     public static Socket socket;
-    public static NewChatImpl newChatImpl;
+    public static MainInterFace mainInterFace;
 
     public static Socket initSocket(Context context, String token) {
 
@@ -50,11 +45,11 @@ public class SocketManager {
 
 
   public static void addSocketListeners() {
-      socket.on(Socket.EVENT_CONNECT, args -> System.out.println("connected"));
+      socket.on(Socket.EVENT_CONNECT, args -> mainInterFace.onSocketConnect());
 
       socket.on(Socket.EVENT_DISCONNECT, args -> System.out.println("discounted"));
 
-      socket.on(Socket.EVENT_CONNECT_ERROR, args -> System.out.println("Got connection error"));
+      socket.on(Socket.EVENT_CONNECT_ERROR, args -> mainInterFace.onSocketConnectError());
 
       socket.on(Constants.EVENT_CONTACT_REQUEST, args -> {
           JSONObject jsonObject = (JSONObject) args[0];
@@ -68,7 +63,7 @@ public class SocketManager {
           } catch (JSONException e) {
               throw new RuntimeException(e);
           }
-          contactViewModel.insert(contact);
+          mainInterFace.onConnectionReq(contact);
       });
 
       socket.on(Constants.EVENT_REQUEST_ACCEPTED, args -> {
@@ -81,15 +76,7 @@ public class SocketManager {
           } catch (JSONException e) {
               throw new RuntimeException(e);
           }
-
-          Contact contact = contactViewModel.getContactByUserId(userid);
-          contact.reqType = Constants.REQUEST_ACCEPTED;
-          contact.name = name;
-          contact.userDp = dplink;
-          contactViewModel.update(contact);
-
-          // calling interface method
-          newChatImpl.createChat(userid);
+          mainInterFace.onReqAccept(userid, name, dplink);
       });
 
       socket.on(Constants.EVENT_REQUEST_REJECTED, args -> {
@@ -100,10 +87,7 @@ public class SocketManager {
           } catch (JSONException e) {
               throw new RuntimeException(e);
           }
-          Contact contactByUserId = contactViewModel.getContactByUserId(userid);
-          contactByUserId.reqType = Constants.REQUEST_REJECTED;
-          contactViewModel.update(contactByUserId);
-          // TODO notify for this event
+          mainInterFace.onReqReject(userid);
       });
 
       socket.on(Constants.EVENT_REQUEST_CANCELED, args -> {
@@ -114,8 +98,7 @@ public class SocketManager {
           } catch (JSONException e) {
               throw new RuntimeException(e);
           }
-          Contact contactByUserId = contactViewModel.getContactByUserId(userid);
-          if (contactByUserId != null) contactViewModel.delete(contactByUserId);
+          mainInterFace.onReqCancel(userid);
       });
   }
 
