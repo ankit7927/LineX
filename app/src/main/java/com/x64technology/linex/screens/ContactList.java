@@ -1,25 +1,20 @@
 package com.x64technology.linex.screens;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
 import com.x64technology.linex.R;
 import com.x64technology.linex.adapters.ContactAdapter;
 import com.x64technology.linex.database.contact.ContactViewModel;
-import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityContactListBinding;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.services.SocketManager;
@@ -29,8 +24,6 @@ import com.x64technology.linex.utils.ContactProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 import io.socket.client.Socket;
 
@@ -98,8 +91,8 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
 
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put(Constants.TO, userId_code);
-                jsonObject.put(Constants.FROM, userPreference.userPref.getString(Constants.STR_USERID, ""));
+                jsonObject.put(Constants.RECEIVER, userId_code);
+                jsonObject.put(Constants.SENDER, userPreference.userPref.getString(Constants.STR_USERID, ""));
                 jsonObject.put(Constants.STR_NAME, userPreference.userPref.getString(Constants.STR_NAME, ""));
                 jsonObject.put(Constants.STR_DPLINK, userPreference.userPref.getString(Constants.STR_DPLINK, "link from fb user"));
             } catch (JSONException e) {

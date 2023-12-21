@@ -18,8 +18,8 @@ public class Constants {
     // database string
 
     public static final String ID = "id";
-    public static final String TO = "to";
-    public static final String FROM = "from";
+    public static final String RECEIVER = "receiver";
+    public static final String SENDER = "sender";
     public static final String CONTENT = "content";
     public static final String TIME = "time";
 

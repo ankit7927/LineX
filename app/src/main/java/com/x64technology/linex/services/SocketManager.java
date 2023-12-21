@@ -55,7 +55,7 @@ public class SocketManager {
           JSONObject jsonObject = (JSONObject) args[0];
           Contact contact = new Contact();
           try {
-              contact.userId = jsonObject.getString(Constants.FROM);
+              contact.userId = jsonObject.getString(Constants.SENDER);
               contact.name = jsonObject.getString(Constants.STR_NAME);
               contact.userDp = jsonObject.getString(Constants.STR_DPLINK);
               contact.reqType = Constants.REQUEST_RECEIVED;
@@ -70,7 +70,7 @@ public class SocketManager {
           JSONObject jsonObject = (JSONObject) args[0];
           String name, userid, dplink;
           try {
-              userid = jsonObject.getString(Constants.FROM);
+              userid = jsonObject.getString(Constants.SENDER);
               name = jsonObject.getString(Constants.STR_NAME);
               dplink = jsonObject.getString(Constants.STR_DPLINK);
           } catch (JSONException e) {
@@ -83,7 +83,7 @@ public class SocketManager {
           JSONObject jsonObject = (JSONObject) args[0];
           String userid;
           try {
-              userid = jsonObject.getString(Constants.FROM);
+              userid = jsonObject.getString(Constants.SENDER);
           } catch (JSONException e) {
               throw new RuntimeException(e);
           }
@@ -94,7 +94,7 @@ public class SocketManager {
           JSONObject jsonObject = (JSONObject) args[0];
           String userid;
           try {
-              userid = jsonObject.getString(Constants.FROM);
+              userid = jsonObject.getString(Constants.SENDER);
           } catch (JSONException e) {
               throw new RuntimeException(e);
           }

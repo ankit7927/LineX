@@ -7,15 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.x64technology.linex.R;
+import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityProfileBinding;
+import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
-import com.x64technology.linex.utils.EnDecoder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +29,7 @@ public class Profile extends AppCompatActivity {
     UserPreference userPreference;
     Intent intent;
     ContactViewModel contactViewModel;
+    ChatViewModel chatViewModel;
     Contact contact;
     Socket socket;
     DBService dbService;
@@ -50,9 +51,8 @@ public class Profile extends AppCompatActivity {
 
         layoutUpdates();
 
-
-
         contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
+        chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         socket = SocketManager.socket;
         dbService = new DBService(this);
     }
@@ -66,8 +66,8 @@ public class Profile extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject();
                 if (contact.reqType.equals(Constants.REQUEST_SENT)) {
                     try {
-                        jsonObject.put(Constants.TO, contact.userId);
-                        jsonObject.put(Constants.FROM, userPreference.userPref.getString(Constants.STR_USERID, ""));
+                        jsonObject.put(Constants.RECEIVER, contact.userId);
+                        jsonObject.put(Constants.SENDER, userPreference.userPref.getString(Constants.STR_USERID, ""));
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -76,8 +76,8 @@ public class Profile extends AppCompatActivity {
                     finish();
                 } else {
                     try {
-                        jsonObject.put(Constants.TO, contact.userId);
-                        jsonObject.put(Constants.FROM, userPreference.userPref.getString(Constants.STR_USERID, ""));
+                        jsonObject.put(Constants.RECEIVER, contact.userId);
+                        jsonObject.put(Constants.SENDER, userPreference.userPref.getString(Constants.STR_USERID, ""));
                         jsonObject.put(Constants.STR_NAME, userPreference.userPref.getString(Constants.STR_NAME, ""));
                         jsonObject.put(Constants.STR_DPLINK, userPreference.userPref.getString(Constants.STR_DPLINK, "link from fb user"));
                     } catch (JSONException e) {
@@ -97,13 +97,28 @@ public class Profile extends AppCompatActivity {
             public void onClick(View view) {
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put(Constants.TO, contact.userId);
-                    jsonObject.put(Constants.FROM, userPreference.userPref.getString(Constants.STR_USERID, ""));
+                    jsonObject.put(Constants.RECEIVER, contact.userId);
+                    jsonObject.put(Constants.SENDER, userPreference.userPref.getString(Constants.STR_USERID, ""));
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
                 socket.emit(Constants.EVENT_REQUEST_REJECTED, jsonObject);
                 contactViewModel.delete(contact);
+                finish();
+            }
+        });
+
+        profileBinding.proMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Chat chatByUserId = chatViewModel.getChatByUserId(contact.userId);
+                if (chatByUserId == null) {
+                    chatByUserId = new Chat(contact.name, contact.userId, contact.userDp, "", "", 0);
+                    chatViewModel.addNewChat(chatByUserId);
+                }
+                intent = new Intent(Profile.this, ChatScreen.class);
+                intent.putExtra("chat", chatByUserId);
+                startActivity(intent);
                 finish();
             }
         });

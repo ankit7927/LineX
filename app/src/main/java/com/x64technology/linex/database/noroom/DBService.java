@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.models.Message;
 import com.x64technology.linex.utils.Constants;
 
@@ -24,23 +23,31 @@ public class DBService {
         readableDb = dbHelper.getReadableDatabase();
     }
 
-    public void newChat(String tableName) {
-        writableDb.execSQL(String.format(Constants.MESSAGE_TABLE_QUERY,
-                        tableName, Constants.ID, Constants.TO, Constants.FROM, Constants.CONTENT, Constants.TIME));
+    private String getTableName (String str) {
+        return "table" + str.substring(str.length() - 7);
     }
 
-    public void insertMsg(String tableName, Message message) {
+
+    public void newChat(String userid) {
+        String tableName = getTableName(userid);
+        writableDb.execSQL(String.format(Constants.MESSAGE_TABLE_QUERY,
+                tableName, Constants.ID, Constants.RECEIVER, Constants.SENDER, Constants.CONTENT, Constants.TIME));
+    }
+
+    public void insertMsg(String userid, Message message) {
+        String tableName = getTableName(userid);
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(Constants.TO, message.to);
-        contentValues.put(Constants.FROM, message.from);
+        contentValues.put(Constants.RECEIVER, message.to);
+        contentValues.put(Constants.SENDER, message.from);
         contentValues.put(Constants.CONTENT, message.content);
         contentValues.put(Constants.TIME, message.time);
 
         writableDb.insert(tableName, null, contentValues);
     }
 
-    public List<Message> getRangedMessages(String tableName) {
+    public List<Message> getRangedMessages(String userid) {
+        String tableName = getTableName(userid);
         Cursor cursor = readableDb.rawQuery("SELECT * FROM "+tableName, new String[] {});
         List<Message> messages = new ArrayList<>();
         while (cursor.moveToNext())
