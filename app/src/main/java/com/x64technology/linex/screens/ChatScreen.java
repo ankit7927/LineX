@@ -11,20 +11,37 @@ import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityChatBinding;
 import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Message;
+import com.x64technology.linex.services.AppPreference;
+import com.x64technology.linex.services.SocketManager;
+import com.x64technology.linex.services.UserPreference;
+import com.x64technology.linex.utils.ChatInterFace;
+import com.x64technology.linex.utils.Constants;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class ChatScreen extends AppCompatActivity {
+import io.socket.client.Socket;
+
+public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     ActivityChatBinding chatBinding;
     MessageAdapter messageAdapter;
     DBService dbService;
     Chat chat;
+    UserPreference userPreference;
+    AppPreference appPreference;
     List<Message> tempMess = new ArrayList<>();
+    JSONObject jsonObject;
     Intent intent;
+    Socket socket;
     SimpleDateFormat simpleDateFormat;
+    String myUserid;
+    Message message;
+
 
 
     @Override
@@ -42,10 +59,15 @@ public class ChatScreen extends AppCompatActivity {
         intent = getIntent();
         if (intent.hasExtra("chat")) chat = (Chat) intent.getSerializableExtra("chat");
 
+        chatBinding.toolbar.setTitle(chat.name);
+
+        userPreference = new UserPreference(this);
+        appPreference = new AppPreference(this);
+        myUserid = userPreference.userPref.getString(Constants.STR_USERID, "");
+
         dbService = new DBService(this);
 
         messageAdapter = new MessageAdapter(this, dbService.getRangedMessages(chat.userid));
-
 
         chatBinding.msgRecycler.setItemAnimator(null);
         chatBinding.msgRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -63,11 +85,9 @@ public class ChatScreen extends AppCompatActivity {
         chatBinding.sendBtn.setOnClickListener(view -> {
             String msg = chatBinding.msgBox.getEditableText().toString();
             String date = simpleDateFormat.format(Calendar.getInstance().getTime());
-            String to = "to_user_id";
-            String from = "from_user_id";
 
-
-            Message message = new Message(to, from, msg, date);
+            message = new Message(chat.userid, myUserid, msg, date);
+            message.isMine = true;
 
             tempMess.add(message);
             messageAdapter.setMessages(tempMess);
@@ -76,8 +96,50 @@ public class ChatScreen extends AppCompatActivity {
             chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
             tempMess.clear();
 
-            dbService.insertMsg(chat.userid, message);
+            dbService.insertMsg(message);
+
+            jsonObject = new JSONObject();
+            try {
+                jsonObject.put(Constants.CONTENT, msg);
+                jsonObject.put(Constants.TIME, date);
+                jsonObject.put(Constants.SENDER, myUserid);
+                jsonObject.put(Constants.RECEIVER, chat.userid);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+            socket.emit(Constants.EVENT_MESSAGE, jsonObject);
             // emit on socket
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+
+        socket = SocketManager.socket;
+        SocketManager.chatInterFace = this;
+        appPreference.saveActiveUser(chat != null ? chat.userid : "");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SocketManager.chatInterFace = null;
+        appPreference.removeActiveUser();
+    }
+
+    @Override
+    public void incomingMessage(Message message1) {
+        runOnUiThread(() -> {
+            tempMess.add(message1);
+            messageAdapter.setMessages(tempMess);
+
+            dbService.insertMsg(message1);
+            chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
+            tempMess.clear();
         });
     }
 }

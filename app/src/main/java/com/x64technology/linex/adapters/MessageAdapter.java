@@ -5,6 +5,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -40,12 +41,9 @@ public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.Message
         holder.messageBinding.msgContent.setText(message.content);
         holder.messageBinding.msgDate.setText(message.time);
 
-        if (message.from.equals("")) {
+        if (message.isMine) {
             holder.messageBinding.layout.setGravity(Gravity.END);
-            holder.messageBinding.msgCard.setCardElevation(2);
-        } else {
-            holder.messageBinding.layout.setGravity(Gravity.START);
-        }
+        } else holder.messageBinding.layout.setGravity(Gravity.START);
     }
 
     @Override

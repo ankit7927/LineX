@@ -14,6 +14,7 @@ import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityMainBinding;
 import com.x64technology.linex.models.Contact;
+import com.x64technology.linex.models.Message;
 import com.x64technology.linex.screens.Auth;
 import com.x64technology.linex.screens.ContactList;
 import com.x64technology.linex.screens.Profile;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements MainInterFace {
     ChatsAdapter chatsAdapter;
     ActivityMainBinding mainBinding;
     ContactViewModel contactViewModel;
+    DBService dbService;
     Socket socket;
     UserPreference userPreference;
     Intent intent;
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements MainInterFace {
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
+        dbService = new DBService(this);
+
         chatsAdapter = new ChatsAdapter(this);
 
         mainBinding.chatRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -140,5 +144,11 @@ public class MainActivity extends AppCompatActivity implements MainInterFace {
     public void onReqCancel(String userid) {
         Contact contactByUserId = contactViewModel.getContactByUserId(userid);
         contactViewModel.delete(contactByUserId);
+    }
+
+    @Override
+    public void onIncomingMessage(Message message) {
+        dbService.insertMsg(message);
+        // TODO update chat last message and count
     }
 }

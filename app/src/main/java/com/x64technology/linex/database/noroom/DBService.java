@@ -31,15 +31,15 @@ public class DBService {
     public void newChat(String userid) {
         String tableName = getTableName(userid);
         writableDb.execSQL(String.format(Constants.MESSAGE_TABLE_QUERY,
-                tableName, Constants.ID, Constants.RECEIVER, Constants.SENDER, Constants.CONTENT, Constants.TIME));
+                tableName, Constants.ID, Constants.RECEIVER, Constants.SENDER, Constants.CONTENT, Constants.TIME, Constants.IS_MINE));
     }
 
-    public void insertMsg(String userid, Message message) {
-        String tableName = getTableName(userid);
+    public void insertMsg(Message message) {
+        String tableName = getTableName(message.sender);
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(Constants.RECEIVER, message.to);
-        contentValues.put(Constants.SENDER, message.from);
+        contentValues.put(Constants.RECEIVER, message.receiver);
+        contentValues.put(Constants.SENDER, message.sender);
         contentValues.put(Constants.CONTENT, message.content);
         contentValues.put(Constants.TIME, message.time);
 

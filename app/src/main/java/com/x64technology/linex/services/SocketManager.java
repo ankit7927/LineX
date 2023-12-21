@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.models.Contact;
+import com.x64technology.linex.models.Message;
+import com.x64technology.linex.utils.ChatInterFace;
 import com.x64technology.linex.utils.Constants;
 import com.x64technology.linex.utils.MainInterFace;
 
@@ -23,10 +25,12 @@ import io.socket.client.Socket;
 public class SocketManager {
     static ContactViewModel contactViewModel;
     public static Socket socket;
+    static AppPreference appPreference;
     public static MainInterFace mainInterFace;
+    public static ChatInterFace chatInterFace;
 
     public static Socket initSocket(Context context, String token) {
-
+        appPreference = new AppPreference(context);
         contactViewModel = new ViewModelProvider((ViewModelStoreOwner) context)
                 .get(ContactViewModel.class);
 
@@ -99,6 +103,24 @@ public class SocketManager {
               throw new RuntimeException(e);
           }
           mainInterFace.onReqCancel(userid);
+      });
+
+      socket.on(Constants.EVENT_MESSAGE, args -> {
+          JSONObject jsonObject = (JSONObject) args[0];
+          Message message = new Message();
+          try {
+              message.content = jsonObject.getString(Constants.CONTENT);
+              message.time = jsonObject.getString(Constants.TIME);
+              message.sender = jsonObject.getString(Constants.SENDER);
+              message.receiver = Constants.RECEIVER;
+          } catch (JSONException e) {
+              throw new RuntimeException(e);
+          }
+
+          String activeUser = appPreference.appPref.getString(Constants.STR_ACTIVE_USER, ""); // TODO check active usr str
+          if (activeUser.equals(message.receiver)) chatInterFace.incomingMessage(message);
+          else mainInterFace.onIncomingMessage(message);
+
       });
   }
 

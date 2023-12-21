@@ -11,22 +11,26 @@ import java.util.Objects;
 
 public class Message implements Serializable {
     public int id;
-    public String to;
-    public String from;
+    public String receiver;
+    public String sender;
     public String content;
     public String time;
+    public boolean isMine = false;
 
-    public Message(String to, String from, String content, String time) {
-        this.to = to;
-        this.from = from;
+    public Message() {
+    }
+
+    public Message(String receiver, String sender, String content, String time) {
+        this.receiver = receiver;
+        this.sender = sender;
         this.content = content;
         this.time = time;
     }
 
-    public Message(int id, String to, String from, String content, String time) {
+    public Message(int id, String receiver, String sender, String content, String time) {
         this.id = id;
-        this.to = to;
-        this.from = from;
+        this.receiver = receiver;
+        this.sender = sender;
         this.content = content;
         this.time = time;
     }
@@ -36,11 +40,11 @@ public class Message implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Message message = (Message) o;
-        return id == message.id && Objects.equals(to, message.to) && Objects.equals(from, message.from) && Objects.equals(content, message.content) && Objects.equals(time, message.time);
+        return id == message.id && Objects.equals(receiver, message.receiver) && Objects.equals(sender, message.sender) && Objects.equals(content, message.content) && Objects.equals(time, message.time);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, to, from, content, time);
+        return Objects.hash(id, receiver, sender, content, time);
     }
 }

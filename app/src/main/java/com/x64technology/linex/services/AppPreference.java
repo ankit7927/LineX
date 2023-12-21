@@ -9,19 +9,18 @@ public class AppPreference {
     public final SharedPreferences appPref;
     private final SharedPreferences.Editor editor;
     public AppPreference(Context context) {
-        String PREF = "my-pref";
-        appPref = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
+        appPref = context.getSharedPreferences(Constants.APP_PREFERENCE, Context.MODE_PRIVATE);
         editor = appPref.edit();
     }
 
 
-    public void saveCurrentChat(String chatId) {
-        editor.putString(Constants.STR_CURRENT_CHAT, chatId);
+    public void saveActiveUser(String chatId) {
+        editor.putString(Constants.STR_ACTIVE_USER, chatId);
         editor.apply();
     }
 
-    public void removeCurrentChat() {
-        editor.remove(Constants.STR_CURRENT_CHAT);
+    public void removeActiveUser() {
+        editor.remove(Constants.STR_ACTIVE_USER);
         editor.apply();
     }
 }

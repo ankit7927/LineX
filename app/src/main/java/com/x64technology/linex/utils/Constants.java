@@ -11,7 +11,7 @@ public class Constants {
     public static final String STR_DPLINK = "dplink";
     public static final String STR_TOKEN = "token";
     public static final String STR_UNKNOWN = "unknown";
-    public static final String STR_CURRENT_CHAT = "current_chat";
+    public static final String STR_ACTIVE_USER = "active_user";
 
 
 
@@ -22,6 +22,7 @@ public class Constants {
     public static final String SENDER = "sender";
     public static final String CONTENT = "content";
     public static final String TIME = "time";
+    public static final String IS_MINE = "is_mine";
 
 
     public static final String CONTACT_TABLE_NAME = "contact";
@@ -52,10 +53,10 @@ public class Constants {
             "DROP TABLE IF EXISTS %s", CONTACT_TABLE_NAME
     );
 
-    public static final String MESSAGE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)";
-
+    public static final String MESSAGE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s BOOLEAN)";
     public static final String EVENT_CONTACT_REQUEST = "contact request";
     public static final String EVENT_REQUEST_ACCEPTED = "request accepted";
     public static final String EVENT_REQUEST_REJECTED = "request rejected";
     public static final String EVENT_REQUEST_CANCELED = "request canceled";
+    public static final String EVENT_MESSAGE = "event message";
 }
