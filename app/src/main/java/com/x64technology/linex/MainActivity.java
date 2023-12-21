@@ -2,7 +2,6 @@ package com.x64technology.linex;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,7 +20,7 @@ import com.x64technology.linex.screens.Profile;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
-import com.x64technology.linex.utils.MainInterFace;
+import com.x64technology.linex.interfaces.MainInterFace;
 
 import io.socket.client.Socket;
 

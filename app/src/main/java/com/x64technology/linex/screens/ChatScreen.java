@@ -14,7 +14,7 @@ import com.x64technology.linex.models.Message;
 import com.x64technology.linex.services.AppPreference;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
-import com.x64technology.linex.utils.ChatInterFace;
+import com.x64technology.linex.interfaces.ChatInterFace;
 import com.x64technology.linex.utils.Constants;
 
 import org.json.JSONException;
@@ -130,7 +130,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     }
 
     @Override
-    public void incomingMessage(Message message1) {
+    public void onIncomingMessageActive(Message message1) {
         runOnUiThread(() -> {
             tempMess.add(message1);
             messageAdapter.setMessages(tempMess);

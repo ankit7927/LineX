@@ -20,7 +20,7 @@ import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
-import com.x64technology.linex.utils.ContactProfile;
+import com.x64technology.linex.interfaces.ContactProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;

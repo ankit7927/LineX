@@ -8,9 +8,9 @@ import androidx.lifecycle.ViewModelStoreOwner;
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.models.Message;
-import com.x64technology.linex.utils.ChatInterFace;
+import com.x64technology.linex.interfaces.ChatInterFace;
 import com.x64technology.linex.utils.Constants;
-import com.x64technology.linex.utils.MainInterFace;
+import com.x64technology.linex.interfaces.MainInterFace;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -118,7 +118,7 @@ public class SocketManager {
           }
 
           String activeUser = appPreference.appPref.getString(Constants.STR_ACTIVE_USER, "");
-          if (activeUser.equals(message.sender)) chatInterFace.incomingMessage(message);
+          if (activeUser.equals(message.sender)) chatInterFace.onIncomingMessageActive(message);
           else mainInterFace.onIncomingMessage(message);
 
       });

@@ -1,4 +1,4 @@
-package com.x64technology.linex.utils;
+package com.x64technology.linex.interfaces;
 
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.models.Message;
@@ -14,5 +14,6 @@ public interface MainInterFace {
     void onReqReject(String userid);
     void onReqCancel(String userid);
 
+    // message methods
     void onIncomingMessage(Message message);
 }

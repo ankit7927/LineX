@@ -13,7 +13,7 @@ import com.x64technology.linex.R;
 import com.x64technology.linex.databinding.LayoutContactBinding;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.utils.diffUtils.ContactDiffUtil;
-import com.x64technology.linex.utils.ContactProfile;
+import com.x64technology.linex.interfaces.ContactProfile;
 
 import java.util.ArrayList;
 import java.util.List;
