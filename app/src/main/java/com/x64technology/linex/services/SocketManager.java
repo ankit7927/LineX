@@ -40,7 +40,7 @@ public class SocketManager {
         IO.Options options = new IO.Options();
         options.auth = test;
         try {
-            socket = IO.socket("http://192.168.43.31:3000", options);
+            socket = IO.socket("http://192.168.230.30:3000", options);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
