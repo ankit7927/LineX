@@ -40,7 +40,7 @@ public class SocketManager {
         IO.Options options = new IO.Options();
         options.auth = test;
         try {
-            socket = IO.socket("http://192.168.230.30:3000", options);
+            socket = IO.socket(Constants.BASE_URL, options);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -118,6 +118,7 @@ public class SocketManager {
           }
 
           String activeUser = appPreference.appPref.getString(Constants.STR_ACTIVE_USER, "");
+          System.out.println(activeUser+"   actvrr d");
           if (activeUser.equals(message.sender)) chatInterFace.onIncomingMessageActive(message);
           else mainInterFace.onIncomingMessage(message);
 

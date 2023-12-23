@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements MainInterFace {
         chatViewModel.getChats().observe(this, chats -> chatsAdapter.setChats(chats));
 
         mainBinding.navigationView.setNavigationItemSelectedListener(item -> {
+            mainBinding.drawerLayout.close();
             if (item.getItemId() == R.id.menu_contacts) {
                 intent = new Intent(MainActivity.this, ContactList.class);
                 startActivity(intent);
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements MainInterFace {
                 intent = new Intent(MainActivity.this, Profile.class);
                 startActivity(intent);
             }
-            mainBinding.drawerLayout.close();
             return false;
         });
     }
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements MainInterFace {
 
     @Override
     public void onIncomingMessage(Message message) {
-        dbService.insertMsg(message);
+        dbService.insertMsg(message.sender, message);
         // TODO update chat last message and count
     }
 }

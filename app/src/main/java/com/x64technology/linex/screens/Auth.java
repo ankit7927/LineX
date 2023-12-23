@@ -1,12 +1,12 @@
 package com.x64technology.linex.screens;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -14,8 +14,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.x64technology.linex.MainActivity;
 import com.x64technology.linex.databinding.ActivityAuthBinding;
-import com.x64technology.linex.services.AppPreference;
 import com.x64technology.linex.services.UserPreference;
+import com.x64technology.linex.utils.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,7 +64,7 @@ public class Auth extends AppCompatActivity {
 
     private void makeCall(String name, String email, String password) {
         progressDialog.show();
-        String url = login ? "http://192.168.43.30:3000/auth/signin" : "http://192.168.43.30:3000/auth/signup";
+        String url = login ? Constants.SIGNIN_URL : Constants.SIGNUP_URL;
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         JSONObject jsonObject = new JSONObject();

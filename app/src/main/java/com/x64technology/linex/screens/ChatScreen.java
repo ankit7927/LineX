@@ -87,7 +87,11 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
             String msg = chatBinding.msgBox.getEditableText().toString();
             String date = simpleDateFormat.format(Calendar.getInstance().getTime());
 
-            message = new Message(chat.userid, myUserid, msg, date);
+            message = new Message();
+            message.receiver = chat.userid;
+            message.sender = myUserid;
+            message.content = msg;
+            message.time = date;
             message.isMine = true;
 
             tempMess.add(message);
@@ -97,7 +101,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
             chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
             tempMess.clear();
 
-            dbService.insertMsg(message);
+            dbService.insertMsg(chat.userid, message);
 
             jsonObject = new JSONObject();
             try {
@@ -135,7 +139,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
             tempMess.add(message1);
             messageAdapter.setMessages(tempMess);
 
-            dbService.insertMsg(message1);
+            dbService.insertMsg(message1.sender, message1);
             chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
             tempMess.clear();
         });

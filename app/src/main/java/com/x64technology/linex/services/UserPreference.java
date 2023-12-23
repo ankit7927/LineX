@@ -28,4 +28,9 @@ public class UserPreference {
         editor.putString(Constants.STR_TOKEN, token);
         editor.apply();
     }
+
+    public void clearUserData() {
+        editor.clear();
+        editor.commit();
+    }
 }

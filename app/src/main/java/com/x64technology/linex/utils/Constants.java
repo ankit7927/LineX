@@ -2,6 +2,10 @@ package com.x64technology.linex.utils;
 
 public class Constants {
 
+    public static final String BASE_URL = "http://192.168.43.30:3000";
+    public static final String SIGNUP_URL = BASE_URL+"/auth/signup";
+    public static final String SIGNIN_URL = BASE_URL+"/auth/signin";
+
     // preference string
     public static final String USER_PREFERENCE = "user_preference";
     public static final String APP_PREFERENCE = "app_preference";
@@ -53,7 +57,7 @@ public class Constants {
             "DROP TABLE IF EXISTS %s", CONTACT_TABLE_NAME
     );
 
-    public static final String MESSAGE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s BOOLEAN)";
+    public static final String MESSAGE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s INTEGER)";
     public static final String EVENT_CONTACT_REQUEST = "contact request";
     public static final String EVENT_REQUEST_ACCEPTED = "request accepted";
     public static final String EVENT_REQUEST_REJECTED = "request rejected";

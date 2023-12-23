@@ -34,14 +34,15 @@ public class DBService {
                 tableName, Constants.ID, Constants.RECEIVER, Constants.SENDER, Constants.CONTENT, Constants.TIME, Constants.IS_MINE));
     }
 
-    public void insertMsg(Message message) {
-        String tableName = getTableName(message.sender);
+    public void insertMsg(String userid, Message message) {
+        String tableName = getTableName(userid);
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(Constants.RECEIVER, message.receiver);
         contentValues.put(Constants.SENDER, message.sender);
         contentValues.put(Constants.CONTENT, message.content);
         contentValues.put(Constants.TIME, message.time);
+        contentValues.put(Constants.IS_MINE, message.isMine ? 1 : 0);
 
         writableDb.insert(tableName, null, contentValues);
     }
@@ -51,7 +52,7 @@ public class DBService {
         Cursor cursor = readableDb.rawQuery("SELECT * FROM "+tableName, new String[] {});
         List<Message> messages = new ArrayList<>();
         while (cursor.moveToNext())
-            messages.add(new Message(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4)));
+            messages.add(new Message(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getInt(5) == 1));
         cursor.close();
         return messages;
     }
