@@ -2,6 +2,7 @@ package com.x64technology.linex.screens;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -80,9 +81,9 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
 
     private void setCallbacks() {
         chatBinding.toolbar.setNavigationOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
-        // add logo to toolbar
+        // TODO add logo to toolbar
 
-        chatBinding.sendBtn.setOnClickListener(view -> {
+        chatBinding.textInputLayout.setEndIconOnClickListener(view -> {
             String msg = chatBinding.msgBox.getEditableText().toString();
             String date = simpleDateFormat.format(Calendar.getInstance().getTime());
 
@@ -109,7 +110,6 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
             }
 
             socket.emit(Constants.EVENT_MESSAGE, jsonObject);
-            // emit on socket
         });
     }
 
