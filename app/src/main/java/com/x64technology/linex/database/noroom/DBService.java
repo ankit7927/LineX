@@ -49,7 +49,7 @@ public class DBService {
 
     public List<Message> getRangedMessages(String userid) {
         String tableName = getTableName(userid);
-        Cursor cursor = readableDb.rawQuery("SELECT * FROM "+tableName, new String[] {});
+        Cursor cursor = readableDb.rawQuery("SELECT * FROM "+tableName+" LIMIT 15", new String[] {});
         List<Message> messages = new ArrayList<>();
         while (cursor.moveToNext())
             messages.add(new Message(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getInt(5) == 1));

@@ -33,7 +33,6 @@ public class Constants {
     public static final String CONTACT_ID = "contact_id";
 
     public static final String CONTACT_NAME = "name";
-    public static final String CONTACT_USERNAME = "username";
     public static final String CONTACT_USER_ID = "user_id";
     public static final String CONTACT_DP_IMAGE = "dp_image";
     public static final String CONTACT_REQUEST_TYPE = "request_type";
@@ -57,7 +56,7 @@ public class Constants {
             "DROP TABLE IF EXISTS %s", CONTACT_TABLE_NAME
     );
 
-    public static final String MESSAGE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s INTEGER)";
+    public static final String MESSAGE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s DATETIME, %s INTEGER)";
     public static final String EVENT_CONTACT_REQUEST = "contact request";
     public static final String EVENT_REQUEST_ACCEPTED = "request accepted";
     public static final String EVENT_REQUEST_REJECTED = "request rejected";

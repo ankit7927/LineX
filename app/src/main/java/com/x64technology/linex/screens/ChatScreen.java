@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.x64technology.linex.adapters.MessageAdapter;
+import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityChatBinding;
 import com.x64technology.linex.models.Chat;
@@ -75,7 +77,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         chatBinding.msgRecycler.setAdapter(messageAdapter);
         chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
 
-        simpleDateFormat = new SimpleDateFormat("h:mm a");
+        simpleDateFormat = new SimpleDateFormat("dd/MM/yy h:mm a");
     }
 
 
@@ -85,13 +87,13 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
 
         chatBinding.textInputLayout.setEndIconOnClickListener(view -> {
             String msg = chatBinding.msgBox.getEditableText().toString();
-            String date = simpleDateFormat.format(Calendar.getInstance().getTime());
+            String time = simpleDateFormat.format(Calendar.getInstance().getTime());
 
             message = new Message();
             message.receiver = chat.userid;
             message.sender = myUserid;
             message.content = msg;
-            message.time = date;
+            message.time = time;
             message.isMine = true;
 
             tempMess.add(message);
@@ -106,13 +108,12 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
             jsonObject = new JSONObject();
             try {
                 jsonObject.put(Constants.CONTENT, msg);
-                jsonObject.put(Constants.TIME, date);
+                jsonObject.put(Constants.TIME, time);
                 jsonObject.put(Constants.SENDER, myUserid);
                 jsonObject.put(Constants.RECEIVER, chat.userid);
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-
             socket.emit(Constants.EVENT_MESSAGE, jsonObject);
         });
     }
@@ -129,6 +130,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         SocketManager.chatInterFace = null;
         appPreference.removeActiveUser();
     }

@@ -12,11 +12,13 @@ import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityMainBinding;
+import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.models.Message;
 import com.x64technology.linex.screens.Auth;
 import com.x64technology.linex.screens.ContactList;
 import com.x64technology.linex.screens.Profile;
+import com.x64technology.linex.services.AppPreference;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements MainInterFace {
     @Override
     protected void onStart() {
         super.onStart();
+        new AppPreference(this).removeActiveUser();
         if (new UserPreference(this)
                 .userPref.getString(Constants.STR_USERID, "").equals("")) {
             startActivity(new Intent(this, Auth.class));
@@ -106,9 +109,7 @@ public class MainActivity extends AppCompatActivity implements MainInterFace {
 
     @Override
     public void onSocketConnect() {
-//        runOnUiThread(() -> {
-//
-//        });
+
     }
 
     @Override
@@ -128,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements MainInterFace {
         contact.name = name;
         contact.userDp = dplink;
         contactViewModel.update(contact);
+
+        chatViewModel.addNewChat(new Chat(name, userid, dplink, "", "", 0));
         new DBService(this).newChat(userid);
     }
 
