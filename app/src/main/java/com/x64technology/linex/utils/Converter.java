@@ -10,4 +10,10 @@ public class Converter {
         Date date = new Date(millis);
         return sdf.format(date);
     }
+
+    public static String MillisToTime(long millis) {
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        Date date = new Date(millis);
+        return sdf.format(date);
+    }
 }

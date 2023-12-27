@@ -25,6 +25,7 @@ import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
 import com.x64technology.linex.interfaces.MainInterFace;
+import com.x64technology.linex.utils.Converter;
 
 import io.socket.client.Socket;
 
@@ -153,7 +154,13 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
     @Override
     public void onIncomingMessage(Message message) {
         dbService.insertMsg(message.sender, message);
-        // TODO update chat last message and count
+
+        Chat chatByUserId = chatViewModel.getChatByUserId(message.sender);
+        chatByUserId.lastMsg = message.content;
+        chatByUserId.lastMsgTime = Converter.MillisToTime(message.timestamp);
+        chatByUserId.unreadCount++;
+
+        chatViewModel.updateChat(chatByUserId);
     }
 
     @Override

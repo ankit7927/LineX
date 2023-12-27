@@ -1,12 +1,16 @@
 package com.x64technology.linex.screens;
 
 import android.content.Intent;
+import android.icu.util.Calendar;
+import android.icu.util.TimeZone;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.x64technology.linex.adapters.MessageAdapter;
+import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityChatBinding;
 import com.x64technology.linex.interfaces.ChatInterFace;
@@ -16,15 +20,19 @@ import com.x64technology.linex.services.AppPreference;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
+import com.x64technology.linex.utils.Converter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Locale;
 
 import io.socket.client.Socket;
 
 public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     ActivityChatBinding chatBinding;
     MessageAdapter messageAdapter;
+    ChatViewModel chatViewModel;
     DBService dbService;
     Chat chat;
     UserPreference userPreference;
@@ -55,6 +63,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         chat = (Chat) intent.getSerializableExtra("chat");
 
         dbService = new DBService(this);
+        chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
 
         messageAdapter = new MessageAdapter(this);
         messageAdapter.messages = dbService.getRangedMessages(chat.userid);
@@ -80,7 +89,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
             message.receiver = chat.userid;
             message.sender = myUserid;
             message.content = chatBinding.msgBox.getEditableText().toString();
-            message.timestamp = (int) System.currentTimeMillis();
+            message.timestamp = (int) Calendar.getInstance(TimeZone.getDefault()).getTimeInMillis();
             message.isMine = true;
 
             chatBinding.msgBox.getEditableText().clear();
@@ -103,6 +112,8 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
                 throw new RuntimeException(e);
             }
             socket.emit(Constants.EVENT_MESSAGE, jsonObject);
+            chat.lastMsg = message.content;
+            chat.lastMsgTime = Converter.MillisToTime(message.timestamp);
         });
     }
 
@@ -121,10 +132,14 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
 
         SocketManager.chatInterFace = null;
         appPreference.removeActiveUser();
+        chat.unreadCount=0;
+        chatViewModel.updateChat(chat);
     }
 
     @Override
     public void onIncomingMessageActive(Message message1) {
+        chat.lastMsg = message1.content;
+        chat.lastMsgTime = Converter.MillisToTime(message1.timestamp);
         runOnUiThread(() -> {
             dbService.insertMsg(message1.sender, message1);
             messageAdapter.messages.add(message1);
