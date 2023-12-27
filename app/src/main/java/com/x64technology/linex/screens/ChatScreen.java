@@ -25,8 +25,6 @@ import com.x64technology.linex.utils.Converter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Locale;
-
 import io.socket.client.Socket;
 
 public class ChatScreen extends AppCompatActivity implements ChatInterFace {
@@ -127,11 +125,12 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
 
         SocketManager.chatInterFace = null;
         appPreference.removeActiveUser();
+
         chat.unreadCount=0;
         chatViewModel.updateChat(chat);
     }
@@ -140,8 +139,9 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     public void onIncomingMessageActive(Message message1) {
         chat.lastMsg = message1.content;
         chat.lastMsgTime = Converter.MillisToTime(message1.timestamp);
+        dbService.insertMsg(message1.sender, message1);
+
         runOnUiThread(() -> {
-            dbService.insertMsg(message1.sender, message1);
             messageAdapter.messages.add(message1);
             int x = messageAdapter.messages.size() -1;
             messageAdapter.notifyItemInserted(x);
