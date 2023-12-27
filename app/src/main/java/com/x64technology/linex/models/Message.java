@@ -9,18 +9,18 @@ public class Message implements Serializable {
     public String receiver;
     public String sender;
     public String content;
-    public String time;
+    public int timestamp;
     public boolean isMine = false;
 
     public Message() {
     }
 
-    public Message(int id, String receiver, String sender, String content, String time, boolean isMine1) {
+    public Message(int id, String receiver, String sender, String content, int timestamp, boolean isMine1) {
         this.id = id;
         this.receiver = receiver;
         this.sender = sender;
         this.content = content;
-        this.time = time;
+        this.timestamp = timestamp;
         this.isMine = isMine1;
     }
 
@@ -29,11 +29,11 @@ public class Message implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Message message = (Message) o;
-        return id == message.id && isMine == message.isMine && Objects.equals(receiver, message.receiver) && Objects.equals(sender, message.sender) && Objects.equals(content, message.content) && Objects.equals(time, message.time);
+        return id == message.id && isMine == message.isMine && Objects.equals(receiver, message.receiver) && Objects.equals(sender, message.sender) && Objects.equals(content, message.content) && Objects.equals(timestamp, message.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, receiver, sender, content, time, isMine);
+        return Objects.hash(id, receiver, sender, content, timestamp, isMine);
     }
 }

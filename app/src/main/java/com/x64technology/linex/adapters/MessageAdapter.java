@@ -6,25 +6,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.x64technology.linex.R;
 import com.x64technology.linex.databinding.LayoutMessageMineBinding;
 import com.x64technology.linex.databinding.LayoutMessageOtherBinding;
 import com.x64technology.linex.models.Message;
-import com.x64technology.linex.utils.diffUtils.MessageDiffUtil;
+import com.x64technology.linex.utils.Converter;
 
 import java.util.List;
 
 public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
     Context context;
-    List<Message> messages;
+    public List<Message> messages;
 
-    public MessageAdapter(Context context, List<Message> messages1) {
+    public MessageAdapter(Context context) {
         this.context = context;
-        this.messages = messages1;
     }
 
     @Override
@@ -45,10 +43,10 @@ public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.Message
         Message message = messages.get(position);
         if (message.isMine) {
             holder.mineBinding.messageMine.setText(message.content);
-            holder.mineBinding.msgTimeMine.setText(message.time);
+            holder.mineBinding.msgTimeMine.setText(Converter.MillisToDateTime(message.timestamp));
         } else {
             holder.otherBinding.messageOther.setText(message.content);
-            holder.otherBinding.msgTimeOther.setText(message.time);
+            holder.otherBinding.msgTimeOther.setText(Converter.MillisToDateTime(message.timestamp));
         }
 
     }
@@ -56,16 +54,6 @@ public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.Message
     @Override
     public int getItemCount() {
         return messages.size();
-    }
-
-
-    public void setMessages(List<Message> newMessages) {
-        MessageDiffUtil messageDiffUtil = new MessageDiffUtil(messages, newMessages);
-        DiffUtil.DiffResult result = DiffUtil.calculateDiff(messageDiffUtil);
-
-        messages.addAll(newMessages);
-
-        result.dispatchUpdatesTo(this);
     }
 
 

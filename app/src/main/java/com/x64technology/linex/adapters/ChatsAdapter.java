@@ -1,7 +1,6 @@
 package com.x64technology.linex.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.x64technology.linex.R;
 import com.x64technology.linex.databinding.LayoutChatBinding;
+import com.x64technology.linex.interfaces.MainToChat;
 import com.x64technology.linex.models.Chat;
-import com.x64technology.linex.screens.ChatScreen;
 import com.x64technology.linex.utils.diffUtils.ChatDiffUtil;
 
 import java.util.ArrayList;
@@ -22,11 +21,12 @@ import java.util.List;
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHolder>{
     Context context;
     List<Chat> chats = new ArrayList<>();
-    Intent intent;
+    MainToChat mainToChat;
 
 
     public ChatsAdapter(Context context) {
         this.context = context;
+        this.mainToChat = (MainToChat) context;
     }
 
     @NonNull
@@ -44,14 +44,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
         holder.chatBinding.dateTextview.setText(chat.lastMsgTime);
         holder.chatBinding.msgCountTextview.setText(String.valueOf(chat.unreadCount));
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                intent = new Intent(context, ChatScreen.class);
-                intent.putExtra("chat", chat);
-                context.startActivity(intent);
-            }
-        });
+        holder.itemView.setOnClickListener(view -> mainToChat.onChatClicked(chat));
     }
 
     @Override

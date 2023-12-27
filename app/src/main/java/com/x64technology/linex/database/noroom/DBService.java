@@ -31,7 +31,7 @@ public class DBService {
     public void newChat(String userid) {
         String tableName = getTableName(userid);
         writableDb.execSQL(String.format(Constants.MESSAGE_TABLE_QUERY,
-                tableName, Constants.ID, Constants.RECEIVER, Constants.SENDER, Constants.CONTENT, Constants.TIME, Constants.IS_MINE));
+                tableName, Constants.ID, Constants.RECEIVER, Constants.SENDER, Constants.CONTENT, Constants.TIMESTAMP, Constants.IS_MINE));
     }
 
     public void insertMsg(String userid, Message message) {
@@ -41,7 +41,7 @@ public class DBService {
         contentValues.put(Constants.RECEIVER, message.receiver);
         contentValues.put(Constants.SENDER, message.sender);
         contentValues.put(Constants.CONTENT, message.content);
-        contentValues.put(Constants.TIME, message.time);
+        contentValues.put(Constants.TIMESTAMP, message.timestamp);
         contentValues.put(Constants.IS_MINE, message.isMine ? 1 : 0);
 
         writableDb.insert(tableName, null, contentValues);
@@ -49,10 +49,11 @@ public class DBService {
 
     public List<Message> getRangedMessages(String userid) {
         String tableName = getTableName(userid);
-        Cursor cursor = readableDb.rawQuery("SELECT * FROM "+tableName+" LIMIT 15", new String[] {});
+        String r =String.format("SELECT * FROM %s ORDER BY %s DESC LIMIT 15", tableName, Constants.TIMESTAMP);
+        Cursor cursor = readableDb.rawQuery(r, new String[] {});
         List<Message> messages = new ArrayList<>();
         while (cursor.moveToNext())
-            messages.add(new Message(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getInt(5) == 1));
+            messages.add(0, new Message(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getInt(4), cursor.getInt(5) == 1));
         cursor.close();
         return messages;
     }

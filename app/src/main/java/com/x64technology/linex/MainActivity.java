@@ -12,10 +12,12 @@ import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityMainBinding;
+import com.x64technology.linex.interfaces.MainToChat;
 import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.models.Message;
 import com.x64technology.linex.screens.Auth;
+import com.x64technology.linex.screens.ChatScreen;
 import com.x64technology.linex.screens.ContactList;
 import com.x64technology.linex.screens.Profile;
 import com.x64technology.linex.services.AppPreference;
@@ -26,7 +28,7 @@ import com.x64technology.linex.interfaces.MainInterFace;
 
 import io.socket.client.Socket;
 
-public class MainActivity extends AppCompatActivity implements MainInterFace {
+public class MainActivity extends AppCompatActivity implements MainInterFace, MainToChat {
     ChatViewModel chatViewModel;
     ChatsAdapter chatsAdapter;
     ActivityMainBinding mainBinding;
@@ -152,5 +154,12 @@ public class MainActivity extends AppCompatActivity implements MainInterFace {
     public void onIncomingMessage(Message message) {
         dbService.insertMsg(message.sender, message);
         // TODO update chat last message and count
+    }
+
+    @Override
+    public void onChatClicked(Chat chat) {
+        intent = new Intent(this, ChatScreen.class);
+        intent.putExtra("chat", chat);
+        startActivity(intent);
     }
 }

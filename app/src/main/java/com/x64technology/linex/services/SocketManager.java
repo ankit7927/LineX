@@ -110,7 +110,7 @@ public class SocketManager {
           Message message = new Message();
           try {
               message.content = jsonObject.getString(Constants.CONTENT);
-              message.time = jsonObject.getString(Constants.TIME);
+              message.timestamp = jsonObject.getInt(Constants.TIMESTAMP);
               message.sender = jsonObject.getString(Constants.SENDER);
               message.receiver = jsonObject.getString(Constants.RECEIVER);
           } catch (JSONException e) {
@@ -118,7 +118,6 @@ public class SocketManager {
           }
 
           String activeUser = appPreference.appPref.getString(Constants.STR_ACTIVE_USER, "");
-          System.out.println(activeUser+"   actvrr d");
           if (activeUser.equals(message.sender)) chatInterFace.onIncomingMessageActive(message);
           else mainInterFace.onIncomingMessage(message);
 

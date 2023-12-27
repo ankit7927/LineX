@@ -25,7 +25,7 @@ public class Constants {
     public static final String RECEIVER = "receiver";
     public static final String SENDER = "sender";
     public static final String CONTENT = "content";
-    public static final String TIME = "time";
+    public static final String TIMESTAMP = "timestamp";
     public static final String IS_MINE = "is_mine";
 
 
@@ -56,7 +56,7 @@ public class Constants {
             "DROP TABLE IF EXISTS %s", CONTACT_TABLE_NAME
     );
 
-    public static final String MESSAGE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s DATETIME, %s INTEGER)";
+    public static final String MESSAGE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s INTEGER, %s INTEGER)";
     public static final String EVENT_CONTACT_REQUEST = "contact request";
     public static final String EVENT_REQUEST_ACCEPTED = "request accepted";
     public static final String EVENT_REQUEST_REJECTED = "request rejected";
