@@ -2,11 +2,14 @@ package com.x64technology.linex;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.x64technology.linex.adapters.ChatsAdapter;
 import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.contact.ContactViewModel;
@@ -33,10 +36,10 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
     ChatViewModel chatViewModel;
     ChatsAdapter chatsAdapter;
     ActivityMainBinding mainBinding;
+    LinearProgressIndicator progressBar;
     ContactViewModel contactViewModel;
     DBService dbService;
     Socket socket;
-    UserPreference userPreference;
     Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +53,12 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
     }
 
     private void initVars() {
-        userPreference = new UserPreference(this);
+        progressBar = new LinearProgressIndicator(this);
+        progressBar.setIndeterminate(true);
+        progressBar.setTrackThickness(2);
+        mainBinding.appbar.addView(progressBar, 0);
 
-        socket = SocketManager.initSocket(this, userPreference.userPref.getString("token", ""));
+        socket = SocketManager.initSocket(this, new UserPreference(this).userPref.getString("token", ""));
         SocketManager.addSocketListeners();
         socket.connect();
         SocketManager.mainInterFace = this;
@@ -68,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
     }
 
     private void setCallbacks() {
+
         mainBinding.searchBar.setNavigationOnClickListener(view -> mainBinding.drawerLayout.open());
 
         mainBinding.floating.setOnClickListener(view -> {
@@ -112,12 +119,20 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
 
     @Override
     public void onSocketConnect() {
+        runOnUiThread(() -> {
+            mainBinding.appbar.removeView(progressBar);
+        });
+    }
 
+    @Override
+    public void onSocketDisconnect() {
+        runOnUiThread(() -> {
+            mainBinding.appbar.addView(progressBar);
+        });
     }
 
     @Override
     public void onSocketConnectError() {
-
     }
 
     @Override

@@ -51,7 +51,7 @@ public class SocketManager {
   public static void addSocketListeners() {
       socket.on(Socket.EVENT_CONNECT, args -> mainInterFace.onSocketConnect());
 
-      socket.on(Socket.EVENT_DISCONNECT, args -> System.out.println("discounted"));
+      socket.on(Socket.EVENT_DISCONNECT, args -> mainInterFace.onSocketDisconnect());
 
       socket.on(Socket.EVENT_CONNECT_ERROR, args -> mainInterFace.onSocketConnectError());
 

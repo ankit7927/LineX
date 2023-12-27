@@ -6,6 +6,7 @@ import com.x64technology.linex.models.Message;
 public interface MainInterFace {
     void onSocketConnect();
     void onSocketConnectError();
+    void onSocketDisconnect();
 
 
     // request methods
