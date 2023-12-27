@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
@@ -59,7 +60,7 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
         }
         contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
 
-        contactAdapter = new ContactAdapter(this, this);
+        contactAdapter = new ContactAdapter(this);
 
         contactListBinding.contactRecycler.setLayoutManager(new LinearLayoutManager(this));
         contactListBinding.contactRecycler.setAdapter(contactAdapter);
@@ -74,8 +75,6 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
 
     private void setCallbacks() {
         contactListBinding.toolbar.setNavigationOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
-
-        contactViewModel.getContacts().observe(this, contacts -> contactAdapter.setContacts(contacts));
 
         contactListBinding.btnSend.setOnClickListener(view -> {
             String userId_code = contactListBinding.inpUserid.getEditableText().toString();
@@ -102,6 +101,23 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
             socket.emit(getString(R.string.event_contact_request), jsonObject);
             Toast.makeText(ContactList.this, "contact request sent", Toast.LENGTH_SHORT).show();
             contactListBinding.inpUserid.getEditableText().clear();
+        });
+
+        contactListBinding.layFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String type = (String) adapterView.getItemAtPosition(i);
+
+                if (type.equals("All"))
+                    contactAdapter.setContacts(contactViewModel.getAllContacts());
+                else
+                    contactAdapter.setContacts(contactViewModel.getTypedContacts(type));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
         });
     }
 

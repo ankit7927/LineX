@@ -24,9 +24,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     ContactProfile contactProfile;
     List<Contact> contacts = new ArrayList<>();
 
-    public ContactAdapter(Context context, ContactProfile contactProfile1) {
+    public ContactAdapter(Context context) {
         this.context = context;
-        this.contactProfile = contactProfile1;
+        this.contactProfile = (ContactProfile) context;
     }
 
     @NonNull

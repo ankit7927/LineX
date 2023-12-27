@@ -8,6 +8,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.x64technology.linex.models.Contact;
+import com.x64technology.linex.utils.Constants;
 
 import java.util.List;
 
@@ -15,7 +16,10 @@ import java.util.List;
 @Dao
 public interface ContactDAO {
     @Query("SELECT * FROM contacts")
-    LiveData<List<Contact>> getContacts();
+    List<Contact> getAllContacts();
+
+    @Query("SELECT * FROM contacts WHERE reqType=:type")
+    List<Contact> getTypedContacts(String type);
 
     @Insert
     void insert(Contact contact);
