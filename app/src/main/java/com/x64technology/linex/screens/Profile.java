@@ -7,12 +7,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityProfileBinding;
 import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Contact;
+import com.x64technology.linex.services.AuthManager;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
@@ -21,12 +25,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Locale;
+import java.util.Map;
 
 import io.socket.client.Socket;
 
 public class Profile extends AppCompatActivity {
     ActivityProfileBinding profileBinding;
     UserPreference userPreference;
+    AuthManager authManager;
+    CognitoUser cognitoUser;
+    Map<String, String> userData;
     Intent intent;
     ContactViewModel contactViewModel;
     ChatViewModel chatViewModel;
@@ -47,9 +55,15 @@ public class Profile extends AppCompatActivity {
 
     private void initVars() {
         intent = getIntent();
+
+        checkOther();
+
+        authManager = new AuthManager(this);
+        cognitoUser = authManager.getUser();
+
         userPreference = new UserPreference(this);
 
-        layoutUpdates();
+        setUserData();
 
         contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
@@ -86,7 +100,7 @@ public class Profile extends AppCompatActivity {
                     socket.emit(Constants.EVENT_REQUEST_ACCEPTED, jsonObject);
                     contact.reqType = Constants.REQUEST_ACCEPTED;
                     contactViewModel.update(contact);
-                    layoutUpdates();
+                    setUserData();
                     chatViewModel.addNewChat(new Chat(contact.name, contact.userId, contact.userDp, "", "", 0));
                     dbService.newChat(contact.userId);
                 }
@@ -125,8 +139,25 @@ public class Profile extends AppCompatActivity {
         });
     }
 
-    private void layoutUpdates() {
+    private void setUserData() {
+        cognitoUser.getDetailsInBackground(new GetDetailsHandler() {
+            @Override
+            public void onSuccess(CognitoUserDetails cognitoUserDetails) {
+                userData = cognitoUserDetails.getAttributes().getAttributes();
 
+                profileBinding.proName.setText(userData.get("name"));
+                profileBinding.proContactCode.setText(cognitoUser.getUserId());
+                // TODO set profile image
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+
+            }
+        });
+    }
+
+    private void checkOther() {
         if (intent.hasExtra("contact")) {
             contact = (Contact) intent.getSerializableExtra("contact");
             profileBinding.toolbar.setTitle("Contact info");
@@ -136,39 +167,21 @@ public class Profile extends AppCompatActivity {
 
             switch (contact.reqType) {
                 case Constants.REQUEST_ACCEPTED:
-                    profileBinding.proReqAccept.setVisibility(View.GONE);
-                    profileBinding.proReqReject.setVisibility(View.GONE);
+                    profileBinding.proMessage.setVisibility(View.VISIBLE);
+                    profileBinding.proDisconnect.setVisibility(View.VISIBLE);
                     break;
                 case Constants.REQUEST_REJECTED:
                     profileBinding.proMessage.setText("Retry Connection");
-                    profileBinding.proDisconnect.setVisibility(View.GONE);
-                    profileBinding.proReqAccept.setVisibility(View.GONE);
-                    profileBinding.proReqReject.setVisibility(View.GONE);
+                    profileBinding.proMessage.setVisibility(View.VISIBLE);
                     break;
-
                 case Constants.REQUEST_RECEIVED:
-                    profileBinding.proMessage.setVisibility(View.GONE);
-                    profileBinding.proDisconnect.setVisibility(View.GONE);
+                    profileBinding.proReqAccept.setVisibility(View.VISIBLE);
+                    profileBinding.proReqReject.setVisibility(View.VISIBLE);
                     break;
                 case Constants.REQUEST_SENT:
                     profileBinding.proReqAccept.setText("Delete Request");
-                    profileBinding.proReqReject.setVisibility(View.GONE);
-                    profileBinding.proMessage.setVisibility(View.GONE);
-                    profileBinding.proDisconnect.setVisibility(View.GONE);
+                    profileBinding.proReqAccept.setVisibility(View.VISIBLE);
             }
-        } else {
-            String name = userPreference.userPref.getString(Constants.STR_NAME, ""); // this will be given by firebase user
-            // this will be given by firebase user
-            String userId = userPreference.userPref.getString(Constants.STR_USERID, "");
-
-            profileBinding.proName.setText(name);
-            profileBinding.proContactCode.setText(String.format(Locale.getDefault(), "cc: %s", userId));
-            profileBinding.proInfo.setText("some new notification");
-
-            profileBinding.proReqAccept.setVisibility(View.GONE);
-            profileBinding.proReqReject.setVisibility(View.GONE);
-            profileBinding.proMessage.setVisibility(View.GONE);
-            profileBinding.proDisconnect.setVisibility(View.GONE);
         }
     }
 }
