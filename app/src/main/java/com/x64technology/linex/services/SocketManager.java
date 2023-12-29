@@ -53,7 +53,11 @@ public class SocketManager {
 
       socket.on(Socket.EVENT_DISCONNECT, args -> mainInterFace.onSocketDisconnect());
 
-      socket.on(Socket.EVENT_CONNECT_ERROR, args -> mainInterFace.onSocketConnectError());
+      socket.on(Socket.EVENT_CONNECT_ERROR, args -> {
+
+          System.out.println(args[0]);
+          mainInterFace.onSocketConnectError();
+      });
 
       socket.on(Constants.EVENT_CONTACT_REQUEST, args -> {
           JSONObject jsonObject = (JSONObject) args[0];

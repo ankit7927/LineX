@@ -2,6 +2,7 @@ package com.x64technology.linex;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -46,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
     DBService dbService;
     Socket socket;
     Intent intent;
-    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +65,7 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
         progressBar.setTrackThickness(2);
         mainBinding.appbar.addView(progressBar, 0);
 
-        socket = SocketManager.initSocket(MainActivity.this, token);
-        SocketManager.addSocketListeners();
-        socket.connect();
+        initAuth();
         SocketManager.mainInterFace = this;
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
@@ -105,15 +103,17 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    protected void initAuth() {
         authManager = new AuthManager(this);
 
         authManager.userLoggedIn(new AuthenticationHandler() {
             @Override
             public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
-                token = userSession.getIdToken().getJWTToken();
+                String jwtToken = userSession.getIdToken().getJWTToken();
+                socket = SocketManager.initSocket(MainActivity.this, jwtToken);
+                SocketManager.addSocketListeners();
+                socket.connect();
+
             }
 
             @Override
@@ -145,8 +145,10 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        socket.disconnect();
-        SocketManager.removeSocketListeners();
+        if (socket != null) {
+            socket.disconnect();
+            SocketManager.removeSocketListeners();
+        }
     }
 
 
@@ -160,12 +162,14 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
     @Override
     public void onSocketDisconnect() {
         runOnUiThread(() -> {
-            mainBinding.appbar.addView(progressBar);
+            mainBinding.appbar.removeView(progressBar);
+            mainBinding.appbar.addView(progressBar, 0);
         });
     }
 
     @Override
     public void onSocketConnectError() {
+
     }
 
     @Override
