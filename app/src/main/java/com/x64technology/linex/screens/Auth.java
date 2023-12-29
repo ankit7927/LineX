@@ -4,26 +4,28 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationContinuation;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.MultiFactorAuthenticationContinuation;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
+import com.amazonaws.services.cognitoidentityprovider.model.SignUpResult;
 import com.x64technology.linex.MainActivity;
 import com.x64technology.linex.databinding.ActivityAuthBinding;
+import com.x64technology.linex.services.AuthManager;
 import com.x64technology.linex.services.UserPreference;
-import com.x64technology.linex.utils.Constants;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Auth extends AppCompatActivity {
     ActivityAuthBinding activityAuthBinding;
     ProgressDialog progressDialog;
     UserPreference userPreference;
+    AuthManager authManager;
     boolean login = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,9 @@ public class Auth extends AppCompatActivity {
         progressDialog.setTitle("authenticating");
 
         activityAuthBinding.namelayout.setVisibility(login ? View.GONE : View.VISIBLE);
+        activityAuthBinding.emailLayout.setVisibility(login ? View.GONE : View.VISIBLE);
+
+        authManager = new AuthManager(this);
 
         setCallbacks();
     }
@@ -50,67 +55,75 @@ public class Auth extends AppCompatActivity {
             activityAuthBinding.btnAuthChange.setText(login? "signup" : "login");
 
             activityAuthBinding.namelayout.setVisibility(login ? View.GONE : View.VISIBLE);
+            activityAuthBinding.emailLayout.setVisibility(login ? View.GONE : View.VISIBLE);
         });
 
         activityAuthBinding.btnContinue.setOnClickListener(view -> {
             String email = activityAuthBinding.inpEmail.getEditableText().toString();
+            String username = activityAuthBinding.inpUsername.getEditableText().toString();
             String name = activityAuthBinding.inpName.getEditableText().toString();
             String password = activityAuthBinding.inpPassword.getEditableText().toString();
 
-            makeCall(name, email, password);
+            makeCall(name, email, username, password);
 
         });
     }
 
-    private void makeCall(String name, String email, String password) {
+    private void makeCall(String name, String email, String username, String password) {
         progressDialog.show();
-        String url = login ? Constants.SIGNIN_URL : Constants.SIGNUP_URL;
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("email", email);
-            jsonObject.put("password", password);
-            if (!login) jsonObject.put("name", name);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST,
-                url,
-                jsonObject,
-                response -> {
-                    try {
-                        userPreference.saveUserData(
-                                response.getString("email"),
-                                response.getString("id"),
-                                response.getString("name"),
-                                "some dp link");
-                        userPreference.saveToken(response.getString("token"));
-
-                        progressDialog.dismiss();
-                        startActivity(new Intent(Auth.this, MainActivity.class));
-                        finish();
-                    } catch (JSONException e) {
-                        Toast.makeText(Auth.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    error.printStackTrace();
-                    progressDialog.dismiss();
-                    activityAuthBinding.inpEmail.setText("");
-                    String err = new String(error.networkResponse.data);
-                    if (error.networkResponse.statusCode == 404)
-                        activityAuthBinding.emailLayout.setError(err);
-                    else if (error.networkResponse.statusCode == 403)
-                        activityAuthBinding.pwordLayout.setError(err);
-                    else Toast.makeText(Auth.this, "Server Error", Toast.LENGTH_SHORT).show();
+        if (login)
+            authManager.signIn(username, password, new AuthenticationHandler() {
+                @Override
+                public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
+                    Intent intent = new Intent(Auth.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
-        );
 
-        requestQueue.add(jsonObjectRequest);
+                @Override
+                public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
+                    authenticationContinuation.continueTask();
+                }
+
+                @Override
+                public void getMFACode(MultiFactorAuthenticationContinuation continuation) {
+
+                }
+
+                @Override
+                public void authenticationChallenge(ChallengeContinuation continuation) {
+
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+
+                }
+            });
+        else {
+            authManager.signUp(name, email, "test image", username, password, new SignUpHandler() {
+                @Override
+                public void onSuccess(CognitoUser user, SignUpResult signUpResult) {
+                    Intent intent;
+                    if (signUpResult.isUserConfirmed()) {
+                        intent = new Intent(Auth.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        intent = new Intent(Auth.this, ConfirmAccount.class);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    // TODO handle
+                }
+            });
+        }
+        progressDialog.dismiss();
     }
-
 }

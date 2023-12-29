@@ -2,19 +2,24 @@ package com.x64technology.linex;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationContinuation;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.MultiFactorAuthenticationContinuation;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.x64technology.linex.adapters.ChatsAdapter;
 import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityMainBinding;
+import com.x64technology.linex.interfaces.MainInterFace;
 import com.x64technology.linex.interfaces.MainToChat;
 import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Contact;
@@ -24,15 +29,15 @@ import com.x64technology.linex.screens.ChatScreen;
 import com.x64technology.linex.screens.ContactList;
 import com.x64technology.linex.screens.Profile;
 import com.x64technology.linex.services.AppPreference;
+import com.x64technology.linex.services.AuthManager;
 import com.x64technology.linex.services.SocketManager;
-import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
-import com.x64technology.linex.interfaces.MainInterFace;
 import com.x64technology.linex.utils.Converter;
 
 import io.socket.client.Socket;
 
 public class MainActivity extends AppCompatActivity implements MainInterFace, MainToChat {
+    AuthManager authManager;
     ChatViewModel chatViewModel;
     ChatsAdapter chatsAdapter;
     ActivityMainBinding mainBinding;
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
     DBService dbService;
     Socket socket;
     Intent intent;
+    String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
         progressBar.setTrackThickness(2);
         mainBinding.appbar.addView(progressBar, 0);
 
-        socket = SocketManager.initSocket(this, new UserPreference(this).userPref.getString("token", ""));
+        socket = SocketManager.initSocket(MainActivity.this, token);
         SocketManager.addSocketListeners();
         socket.connect();
         SocketManager.mainInterFace = this;
@@ -101,12 +108,38 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
     @Override
     protected void onStart() {
         super.onStart();
+        authManager = new AuthManager(this);
+
+        authManager.userLoggedIn(new AuthenticationHandler() {
+            @Override
+            public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
+                token = userSession.getIdToken().getJWTToken();
+            }
+
+            @Override
+            public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
+                authenticationContinuation.continueTask();
+            }
+
+            @Override
+            public void getMFACode(MultiFactorAuthenticationContinuation continuation) {
+
+            }
+
+            @Override
+            public void authenticationChallenge(ChallengeContinuation continuation) {
+
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                startActivity(new Intent(MainActivity.this, Auth.class));
+                finish();
+            }
+        });
+
+
         new AppPreference(this).removeActiveUser();
-        if (new UserPreference(this)
-                .userPref.getString(Constants.STR_USERID, "").equals("")) {
-            startActivity(new Intent(this, Auth.class));
-            finish();
-        }
     }
 
     @Override

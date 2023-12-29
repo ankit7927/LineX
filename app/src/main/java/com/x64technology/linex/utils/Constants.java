@@ -1,6 +1,12 @@
 package com.x64technology.linex.utils;
 
+import com.amazonaws.regions.Regions;
+
 public class Constants {
+    public static final String poolID = "ap-south-1_5EvEoJ3lh";
+    public static final String clientID = "u5irdev25sonfb81ogt3ufngt";
+    public static final String clientSecret = "1n2ukkda2sinuul8anjheaolr5e1q1ucocr6asjrabb7fcphmhq0";
+    public static final Regions awsRegion = Regions.AP_SOUTH_1;
 
     public static final String BASE_URL = "http://192.168.43.30:3000";
     public static final String SIGNUP_URL = BASE_URL+"/auth/signup";
