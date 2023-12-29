@@ -12,12 +12,16 @@ import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.google.android.material.snackbar.Snackbar;
 import com.x64technology.linex.R;
 import com.x64technology.linex.adapters.ContactAdapter;
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.databinding.ActivityContactListBinding;
 import com.x64technology.linex.models.Contact;
+import com.x64technology.linex.services.AuthManager;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
@@ -26,11 +30,16 @@ import com.x64technology.linex.interfaces.ContactProfile;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 import io.socket.client.Socket;
 
 public class ContactList extends AppCompatActivity implements ContactProfile {
 
     ActivityContactListBinding contactListBinding;
+    AuthManager authManager;
+    CognitoUser cognitoUser;
+    Map<String, String> userData;
     ContactViewModel contactViewModel;
     Intent intent;
     ContactAdapter contactAdapter;
@@ -52,6 +61,9 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
 
     private void initVars() {
         intent = getIntent();
+        authManager = new AuthManager(this);
+        cognitoUser = authManager.getUser();
+
         if (intent.hasExtra("new contact")) {
             contactListBinding.toolbar.setTitle("Add Contact");
         } else {
@@ -91,9 +103,9 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put(Constants.RECEIVER, userId_code);
-                jsonObject.put(Constants.SENDER, userPreference.userPref.getString(Constants.STR_USERID, ""));
-                jsonObject.put(Constants.STR_NAME, userPreference.userPref.getString(Constants.STR_NAME, ""));
-                jsonObject.put(Constants.STR_DPLINK, userPreference.userPref.getString(Constants.STR_DPLINK, "link from fb user"));
+                jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
+                jsonObject.put(Constants.STR_NAME, userData.get("name"));
+                jsonObject.put(Constants.STR_DPLINK, userData.get("picture"));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
@@ -126,5 +138,19 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
         intent = new Intent(this, Profile.class);
         intent.putExtra("contact", contact);
         startActivity(intent);
+    }
+
+    private void getUserData() {
+        cognitoUser.getDetailsInBackground(new GetDetailsHandler() {
+            @Override
+            public void onSuccess(CognitoUserDetails cognitoUserDetails) {
+                userData = cognitoUserDetails.getAttributes().getAttributes();
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+
+            }
+        });
     }
 }

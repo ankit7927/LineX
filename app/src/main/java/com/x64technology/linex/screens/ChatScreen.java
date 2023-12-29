@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.x64technology.linex.adapters.MessageAdapter;
 import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.noroom.DBService;
@@ -17,6 +18,7 @@ import com.x64technology.linex.interfaces.ChatInterFace;
 import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Message;
 import com.x64technology.linex.services.AppPreference;
+import com.x64technology.linex.services.AuthManager;
 import com.x64technology.linex.services.SocketManager;
 import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
@@ -29,6 +31,8 @@ import io.socket.client.Socket;
 
 public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     ActivityChatBinding chatBinding;
+    AuthManager authManager;
+    CognitoUser cognitoUser;
     MessageAdapter messageAdapter;
     ChatViewModel chatViewModel;
     DBService dbService;
@@ -38,7 +42,6 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     JSONObject jsonObject;
     Intent intent;
     Socket socket;
-    String myUserid;
     Message message;
 
 
@@ -59,6 +62,8 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     private void initVars() {
         intent = getIntent();
         chat = (Chat) intent.getSerializableExtra("chat");
+        authManager = new AuthManager(this);
+        cognitoUser = authManager.getUser();
 
         dbService = new DBService(this);
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
@@ -74,7 +79,6 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
 
         userPreference = new UserPreference(this);
         appPreference = new AppPreference(this);
-        myUserid = userPreference.userPref.getString(Constants.STR_USERID, "");
     }
 
 
@@ -85,7 +89,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         chatBinding.textInputLayout.setEndIconOnClickListener(view -> {
             message = new Message();
             message.receiver = chat.userid;
-            message.sender = myUserid;
+            message.sender = cognitoUser.getUserId();
             message.content = chatBinding.msgBox.getEditableText().toString();
             message.timestamp = (int) Calendar.getInstance(TimeZone.getDefault()).getTimeInMillis();
             message.isMine = true;
@@ -104,7 +108,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
             try {
                 jsonObject.put(Constants.CONTENT, message.content);
                 jsonObject.put(Constants.TIMESTAMP, message.timestamp);
-                jsonObject.put(Constants.SENDER, myUserid);
+                jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
                 jsonObject.put(Constants.RECEIVER, chat.userid);
             } catch (JSONException e) {
                 throw new RuntimeException(e);

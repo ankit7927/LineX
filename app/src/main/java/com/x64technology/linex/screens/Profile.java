@@ -100,7 +100,6 @@ public class Profile extends AppCompatActivity {
                     socket.emit(Constants.EVENT_REQUEST_ACCEPTED, jsonObject);
                     contact.reqType = Constants.REQUEST_ACCEPTED;
                     contactViewModel.update(contact);
-                    setUserData();
                     chatViewModel.addNewChat(new Chat(contact.name, contact.userId, contact.userDp, "", "", 0));
                     dbService.newChat(contact.userId);
                 }
