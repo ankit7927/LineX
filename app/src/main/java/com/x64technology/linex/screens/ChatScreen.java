@@ -20,7 +20,6 @@ import com.x64technology.linex.models.Message;
 import com.x64technology.linex.services.AppPreference;
 import com.x64technology.linex.services.AuthManager;
 import com.x64technology.linex.services.SocketManager;
-import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
 import com.x64technology.linex.utils.Converter;
 
@@ -37,7 +36,6 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     ChatViewModel chatViewModel;
     DBService dbService;
     Chat chat;
-    UserPreference userPreference;
     AppPreference appPreference;
     JSONObject jsonObject;
     Intent intent;
@@ -77,7 +75,6 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
 
         chatBinding.toolbar.setTitle(chat.name);
 
-        userPreference = new UserPreference(this);
         appPreference = new AppPreference(this);
     }
 
@@ -86,7 +83,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         chatBinding.toolbar.setNavigationOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
         // TODO add logo to toolbar
 
-        chatBinding.textInputLayout.setEndIconOnClickListener(view -> {
+        chatBinding.btnMsgSend.setOnClickListener(view -> {
             message = new Message();
             message.receiver = chat.userid;
             message.sender = cognitoUser.getUserId();

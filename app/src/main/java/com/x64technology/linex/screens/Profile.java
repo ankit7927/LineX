@@ -1,11 +1,11 @@
 package com.x64technology.linex.screens;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
@@ -18,7 +18,6 @@ import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.services.AuthManager;
 import com.x64technology.linex.services.SocketManager;
-import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
 
 import org.json.JSONException;
@@ -31,7 +30,6 @@ import io.socket.client.Socket;
 
 public class Profile extends AppCompatActivity {
     ActivityProfileBinding profileBinding;
-    UserPreference userPreference;
     AuthManager authManager;
     CognitoUser cognitoUser;
     Map<String, String> userData;
@@ -61,7 +59,6 @@ public class Profile extends AppCompatActivity {
         authManager = new AuthManager(this);
         cognitoUser = authManager.getUser();
 
-        userPreference = new UserPreference(this);
 
         setUserData();
 
@@ -81,7 +78,7 @@ public class Profile extends AppCompatActivity {
                 if (contact.reqType.equals(Constants.REQUEST_SENT)) {
                     try {
                         jsonObject.put(Constants.RECEIVER, contact.userId);
-                        jsonObject.put(Constants.SENDER, userPreference.userPref.getString(Constants.STR_USERID, ""));
+                        jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -91,9 +88,9 @@ public class Profile extends AppCompatActivity {
                 } else {
                     try {
                         jsonObject.put(Constants.RECEIVER, contact.userId);
-                        jsonObject.put(Constants.SENDER, userPreference.userPref.getString(Constants.STR_USERID, ""));
-                        jsonObject.put(Constants.STR_NAME, userPreference.userPref.getString(Constants.STR_NAME, ""));
-                        jsonObject.put(Constants.STR_DPLINK, userPreference.userPref.getString(Constants.STR_DPLINK, "link from fb user"));
+                        jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
+                        jsonObject.put(Constants.STR_NAME, userData.get("name"));
+                        jsonObject.put(Constants.STR_DPLINK, userData.get("picture"));
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -112,7 +109,7 @@ public class Profile extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put(Constants.RECEIVER, contact.userId);
-                    jsonObject.put(Constants.SENDER, userPreference.userPref.getString(Constants.STR_USERID, ""));
+                    jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }

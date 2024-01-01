@@ -19,12 +19,10 @@ import com.amazonaws.services.cognitoidentityprovider.model.SignUpResult;
 import com.x64technology.linex.MainActivity;
 import com.x64technology.linex.databinding.ActivityAuthBinding;
 import com.x64technology.linex.services.AuthManager;
-import com.x64technology.linex.services.UserPreference;
 
 public class Auth extends AppCompatActivity {
     ActivityAuthBinding activityAuthBinding;
     ProgressDialog progressDialog;
-    UserPreference userPreference;
     AuthManager authManager;
     boolean login = true;
     @Override
@@ -33,7 +31,6 @@ public class Auth extends AppCompatActivity {
         activityAuthBinding = ActivityAuthBinding.inflate(getLayoutInflater());
         setContentView(activityAuthBinding.getRoot());
 
-        userPreference = new UserPreference(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("please wait");
         progressDialog.setTitle("authenticating");

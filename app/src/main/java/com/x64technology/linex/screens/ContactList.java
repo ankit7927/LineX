@@ -1,9 +1,5 @@
 package com.x64technology.linex.screens;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +7,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
@@ -20,16 +21,16 @@ import com.x64technology.linex.R;
 import com.x64technology.linex.adapters.ContactAdapter;
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.databinding.ActivityContactListBinding;
+import com.x64technology.linex.interfaces.ContactProfile;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.services.AuthManager;
 import com.x64technology.linex.services.SocketManager;
-import com.x64technology.linex.services.UserPreference;
 import com.x64technology.linex.utils.Constants;
-import com.x64technology.linex.interfaces.ContactProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 import io.socket.client.Socket;
@@ -43,7 +44,6 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
     ContactViewModel contactViewModel;
     Intent intent;
     ContactAdapter contactAdapter;
-    UserPreference userPreference;
     Socket socket;
     SpinnerAdapter spinnerAdapter;
 
@@ -64,6 +64,8 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
         authManager = new AuthManager(this);
         cognitoUser = authManager.getUser();
 
+        getUserData();
+
         if (intent.hasExtra("new contact")) {
             contactListBinding.toolbar.setTitle("Add Contact");
         } else {
@@ -77,7 +79,6 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
         contactListBinding.contactRecycler.setLayoutManager(new LinearLayoutManager(this));
         contactListBinding.contactRecycler.setAdapter(contactAdapter);
 
-        userPreference = new UserPreference(this);
         socket = SocketManager.socket;
 
         String[] contact_types_Array = getResources().getStringArray(R.array.contact_types);
@@ -87,6 +88,8 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
 
     private void setCallbacks() {
         contactListBinding.toolbar.setNavigationOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
+
+        contactViewModel.getAllContacts().observe(this, contacts -> contactAdapter.setContacts(contacts));
 
         contactListBinding.btnSend.setOnClickListener(view -> {
             String userId_code = contactListBinding.inpUserid.getEditableText().toString();
@@ -115,22 +118,22 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
             contactListBinding.inpUserid.getEditableText().clear();
         });
 
-        contactListBinding.layFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String type = (String) adapterView.getItemAtPosition(i);
-
-                if (type.equals("All"))
-                    contactAdapter.setContacts(contactViewModel.getAllContacts());
-                else
-                    contactAdapter.setContacts(contactViewModel.getTypedContacts(type));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        contactListBinding.layFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                String type = (String) adapterView.getItemAtPosition(i);
+//
+//                if (type.equals("All"))
+//                    contactViewModel.getAllContacts().observe(ContactList.this, (Observer<List<Contact>>) contacts -> contactAdapter.setContacts(contacts));
+//                else
+//                    contactAdapter.setContacts(contactViewModel.getTypedContacts(type));
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
     }
 
     @Override

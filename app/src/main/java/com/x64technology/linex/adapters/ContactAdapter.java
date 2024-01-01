@@ -40,7 +40,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = contacts.get(position);
         holder.contactBinding.contactName.setText(contact.name);
-        holder.contactBinding.connectionCode.setText(contact.userId); // TODO change it with user id mask with cc
+        holder.contactBinding.connectionCode.setText(contact.userId);
+        holder.contactBinding.reqType.setText(contact.reqType);
 
         holder.itemView.setOnClickListener(view -> contactProfile.onContactClicked(contact));
     }

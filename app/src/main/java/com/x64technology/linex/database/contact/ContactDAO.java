@@ -16,7 +16,7 @@ import java.util.List;
 @Dao
 public interface ContactDAO {
     @Query("SELECT * FROM contacts")
-    List<Contact> getAllContacts();
+    LiveData<List<Contact>> getAllContacts();
 
     @Query("SELECT * FROM contacts WHERE reqType=:type")
     List<Contact> getTypedContacts(String type);

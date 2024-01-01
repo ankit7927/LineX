@@ -15,7 +15,7 @@ public class ContactRepo {
        contactDAO = ContactDatabase.getInstance(application).chatDAO();
     }
 
-    public List<Contact> getAllContacts() {
+    public LiveData<List<Contact>> getAllContacts() {
         return contactDAO.getAllContacts();
     }
 
