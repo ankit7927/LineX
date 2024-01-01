@@ -5,9 +5,11 @@ import android.icu.util.Calendar;
 import android.icu.util.TimeZone;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.x64technology.linex.adapters.MessageAdapter;
@@ -34,6 +36,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     CognitoUser cognitoUser;
     MessageAdapter messageAdapter;
     ChatViewModel chatViewModel;
+    LinearLayoutManager msgLayoutMgr;
     DBService dbService;
     Chat chat;
     AppPreference appPreference;
@@ -70,7 +73,8 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         messageAdapter.messages = dbService.getRangedMessages(chat.userid);
 
         chatBinding.msgRecycler.setAdapter(messageAdapter);
-        chatBinding.msgRecycler.setLayoutManager(new LinearLayoutManager(this));
+        msgLayoutMgr = new LinearLayoutManager(this);
+        chatBinding.msgRecycler.setLayoutManager(msgLayoutMgr);
         chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
 
         chatBinding.toolbar.setTitle(chat.name);
@@ -83,6 +87,14 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     private void setCallbacks() {
         chatBinding.toolbar.setNavigationOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
         // TODO add logo to toolbar
+
+        chatBinding.msgRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                // TODO get chats when scrolled up
+            }
+        });
 
         chatBinding.btnMsgSend.setOnClickListener(view -> {
             message = new Message();
