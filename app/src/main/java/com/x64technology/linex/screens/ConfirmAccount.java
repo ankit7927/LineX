@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.x64technology.linex.MainActivity;
 import com.x64technology.linex.databinding.ActivityConfirmAccountBinding;
 import com.x64technology.linex.services.AuthManager;
@@ -15,6 +16,7 @@ import com.x64technology.linex.services.AuthManager;
 public class ConfirmAccount extends AppCompatActivity {
 
     ActivityConfirmAccountBinding binding;
+    LinearProgressIndicator progressBar;
     AuthManager authManager;
 
 
@@ -26,26 +28,35 @@ public class ConfirmAccount extends AppCompatActivity {
 
         authManager = new AuthManager(this);
 
+        progressBar = new LinearProgressIndicator(this);
+        progressBar.setIndeterminate(true);
+        progressBar.setTrackThickness(4);
+        progressBar.setPadding(16, 4, 16, 0);
+
         String username = getIntent().getStringExtra("username");
 
 
         binding.btnVerify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                binding.confConstraint.addView(progressBar, 0);
+                binding.btnVerify.setEnabled(false);
+                binding.btnResendOtp.setEnabled(false);
+
                 String otp = binding.inpOtp.getEditableText().toString();
                 authManager.confirmUser(username, otp, new GenericHandler() {
                     @Override
                     public void onSuccess() {
-                        Intent intent = new Intent(ConfirmAccount.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        setResult(RESULT_OK);
                         finish();
                     }
 
                     @Override
                     public void onFailure(Exception exception) {
-                        Toast.makeText(ConfirmAccount.this, exception.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        binding.confConstraint.removeView(progressBar);
+                        binding.btnVerify.setEnabled(true);
+                        binding.btnResendOtp.setEnabled(true);
+                        binding.layoutOtp.setError(exception.getLocalizedMessage());
                     }
                 });
             }

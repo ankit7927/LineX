@@ -74,6 +74,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         chatBinding.msgRecycler.scrollToPosition(messageAdapter.getItemCount() - 1);
 
         chatBinding.toolbar.setTitle(chat.name);
+        chatBinding.toolbar.setSubtitle(chat.userid);
 
         appPreference = new AppPreference(this);
     }

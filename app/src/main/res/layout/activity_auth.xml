@@ -8,130 +8,130 @@
     tools:context=".screens.Auth">
 
 
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".screens.Auth">
-
-    <TextView
-        android:id="@+id/heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:text="Welcome Back"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/subheading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="nice to see you again"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/heading"
-        app:layout_constraintTop_toBottomOf="@+id/heading" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/namelayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/auth_constraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subheading">
+        tools:context=".screens.Auth">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inp_name"
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="Welcome Back"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/subheading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="nice to see you again"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/heading"
+            app:layout_constraintTop_toBottomOf="@+id/heading" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/namelayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="name" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subheading">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/namelayout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inp_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="name" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inp_email"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="email" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/namelayout">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/usernamelayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailLayout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inp_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="email" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inp_username"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/usernamelayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="username" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/emailLayout">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/pwordLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernamelayout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inp_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="username" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inp_password"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/pwordLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="password" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/usernamelayout">
 
-    <Button
-        android:id="@+id/btn_continue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:text="continue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pwordLayout" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inp_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="password" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_auth_change"
-        style="@style/Widget.Material3.Button.TextButton.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:text="or signup here"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_continue" />
+        <Button
+            android:id="@+id/btn_continue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:text="continue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pwordLayout" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/btn_auth_change"
+            style="@style/Widget.Material3.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:text="or signup here"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_continue" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

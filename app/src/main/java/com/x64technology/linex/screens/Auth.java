@@ -1,11 +1,20 @@
 package com.x64technology.linex.screens;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
@@ -16,14 +25,17 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Mult
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
 import com.amazonaws.services.cognitoidentityprovider.model.SignUpResult;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.x64technology.linex.MainActivity;
 import com.x64technology.linex.databinding.ActivityAuthBinding;
 import com.x64technology.linex.services.AuthManager;
 
 public class Auth extends AppCompatActivity {
     ActivityAuthBinding activityAuthBinding;
-    ProgressDialog progressDialog;
+    LinearProgressIndicator progressBar;
     AuthManager authManager;
+    TextView errorMsg;
+    Intent intent;
     boolean login = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +43,10 @@ public class Auth extends AppCompatActivity {
         activityAuthBinding = ActivityAuthBinding.inflate(getLayoutInflater());
         setContentView(activityAuthBinding.getRoot());
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("please wait");
-        progressDialog.setTitle("authenticating");
+        progressBar = new LinearProgressIndicator(this);
+        progressBar.setIndeterminate(true);
+        progressBar.setTrackThickness(4);
+        progressBar.setPadding(16, 4, 16, 0);
 
         activityAuthBinding.namelayout.setVisibility(login ? View.GONE : View.VISIBLE);
         activityAuthBinding.emailLayout.setVisibility(login ? View.GONE : View.VISIBLE);
@@ -61,19 +74,21 @@ public class Auth extends AppCompatActivity {
             String name = activityAuthBinding.inpName.getEditableText().toString();
             String password = activityAuthBinding.inpPassword.getEditableText().toString();
 
+            activityAuthBinding.authConstraint.addView(progressBar, 0);
+            activityAuthBinding.btnContinue.setEnabled(false);
             makeCall(name, email, username, password);
-
         });
     }
 
     private void makeCall(String name, String email, String username, String password) {
-        progressDialog.show();
-
         if (login)
             authManager.signIn(username, password, new AuthenticationHandler() {
                 @Override
                 public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
-                    Intent intent = new Intent(Auth.this, MainActivity.class);
+                    activityAuthBinding.authConstraint.removeView(progressBar);
+                    activityAuthBinding.btnContinue.setEnabled(true);
+
+                    intent = new Intent(Auth.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -97,14 +112,22 @@ public class Auth extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Exception exception) {
+                    activityAuthBinding.authConstraint.removeView(progressBar);
+                    activityAuthBinding.btnContinue.setEnabled(true);
 
+                    errorMsg = new TextView(Auth.this);
+                    errorMsg.setPadding(16, 16, 16, 0);
+                    errorMsg.setText(exception.getMessage());
+                    activityAuthBinding.authConstraint.addView(errorMsg);
                 }
             });
         else {
             authManager.signUp(name, email, "test image", username, password, new SignUpHandler() {
                 @Override
                 public void onSuccess(CognitoUser user, SignUpResult signUpResult) {
-                    Intent intent;
+                    activityAuthBinding.authConstraint.removeView(progressBar);
+                    activityAuthBinding.btnContinue.setEnabled(true);
+
                     if (signUpResult.isUserConfirmed()) {
                         intent = new Intent(Auth.this, MainActivity.class);
                         startActivity(intent);
@@ -112,16 +135,33 @@ public class Auth extends AppCompatActivity {
                     } else {
                         intent = new Intent(Auth.this, ConfirmAccount.class);
                         intent.putExtra("username", username);
-                        startActivity(intent);
+
+                        launcher.launch(intent);
                     }
                 }
 
                 @Override
                 public void onFailure(Exception exception) {
-                    // TODO handle
+                    activityAuthBinding.authConstraint.removeView(progressBar);
+                    activityAuthBinding.btnContinue.setEnabled(true);
+
+                    errorMsg = new TextView(Auth.this);
+                    errorMsg.setPadding(16, 16, 16, 0);
+                    errorMsg.setText(exception.getLocalizedMessage());
+                    activityAuthBinding.authConstraint.addView(errorMsg);
                 }
             });
         }
-        progressDialog.dismiss();
     }
+
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    intent = new Intent(Auth.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+    );
 }

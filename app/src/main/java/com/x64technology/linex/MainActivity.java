@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
         progressBar = new LinearProgressIndicator(this);
         progressBar.setIndeterminate(true);
         progressBar.setTrackThickness(2);
+        progressBar.setPadding(16, 4, 16, 0);
         mainBinding.appbar.addView(progressBar, 0);
 
         initAuth();
