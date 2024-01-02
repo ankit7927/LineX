@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.x64technology.linex.R;
 import com.x64technology.linex.databinding.LayoutContactBinding;
 import com.x64technology.linex.models.Contact;
+import com.x64technology.linex.utils.Constants;
 import com.x64technology.linex.utils.diffUtils.ContactDiffUtil;
 import com.x64technology.linex.interfaces.ContactProfile;
 
@@ -43,7 +44,24 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         holder.contactBinding.connectionCode.setText(contact.userId);
         holder.contactBinding.reqType.setText(contact.reqType);
 
-        holder.itemView.setOnClickListener(view -> contactProfile.onContactClicked(contact));
+        System.out.println("we are chaning");
+
+        switch (contact.reqType) {
+            case Constants.REQUEST_ACCEPTED:
+                holder.itemView.setOnClickListener(view -> contactProfile.onContactClicked(contact));
+                break;
+            case Constants.REQUEST_RECEIVED:
+                holder.contactBinding.btnReqAccpt.setVisibility(View.VISIBLE);
+                holder.contactBinding.btnReqReject.setVisibility(View.VISIBLE);
+
+                holder.contactBinding.btnReqAccpt.setOnClickListener(view -> contactProfile.onRequestAcceptClicked(contact));
+                holder.contactBinding.btnReqReject.setOnClickListener(view -> contactProfile.onRequestRejectClicked(contact));
+                break;
+            case Constants.REQUEST_SENT:
+                holder.contactBinding.btnReqCancel.setVisibility(View.VISIBLE);
+                holder.contactBinding.btnReqCancel.setOnClickListener(view -> contactProfile.onRequestCancelClicked(contact));
+                break;
+        }
     }
 
     @Override

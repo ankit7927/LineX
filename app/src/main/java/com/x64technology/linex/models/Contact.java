@@ -32,6 +32,10 @@ public class Contact implements Serializable {
         this.reqType = reqType;
     }
 
+    public void setReqType(String reqType) {
+        this.reqType = reqType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

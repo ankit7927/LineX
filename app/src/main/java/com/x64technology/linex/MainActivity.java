@@ -200,7 +200,8 @@ public class MainActivity extends AppCompatActivity implements MainInterFace, Ma
     @Override
     public void onReqCancel(String userid) {
         Contact contactByUserId = contactViewModel.getContactByUserId(userid);
-        contactViewModel.delete(contactByUserId);
+        if (contactByUserId != null)
+            contactViewModel.delete(contactByUserId);
     }
 
     @Override

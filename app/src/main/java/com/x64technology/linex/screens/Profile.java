@@ -77,55 +77,6 @@ public class Profile extends AppCompatActivity {
     private void setCallbacks() {
         profileBinding.toolbar.setNavigationOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
-        profileBinding.proReqAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                JSONObject jsonObject = new JSONObject();
-                if (contact.reqType.equals(Constants.REQUEST_SENT)) {
-                    try {
-                        jsonObject.put(Constants.RECEIVER, contact.userId);
-                        jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                    socket.emit(Constants.EVENT_REQUEST_CANCELED, jsonObject);
-                    contactViewModel.delete(contact);
-                    finish();
-                } else {
-                    try {
-                        jsonObject.put(Constants.RECEIVER, contact.userId);
-                        jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
-                        jsonObject.put(Constants.STR_NAME, userData.get("name"));
-                        jsonObject.put(Constants.STR_DPLINK, userData.get("picture"));
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                    socket.emit(Constants.EVENT_REQUEST_ACCEPTED, jsonObject);
-                    contact.reqType = Constants.REQUEST_ACCEPTED;
-                    contactViewModel.update(contact);
-                    chatViewModel.addNewChat(new Chat(contact.name, contact.userId, contact.userDp, "", "", 0));
-                    dbService.newChat(contact.userId);
-                    finish();
-                }
-            }
-        });
-
-        profileBinding.proReqReject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put(Constants.RECEIVER, contact.userId);
-                    jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-                socket.emit(Constants.EVENT_REQUEST_REJECTED, jsonObject);
-                contactViewModel.delete(contact);
-                finish();
-            }
-        });
-
         profileBinding.proMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,26 +117,8 @@ public class Profile extends AppCompatActivity {
             contact = (Contact) intent.getSerializableExtra("contact");
             profileBinding.toolbar.setTitle("Contact info");
             profileBinding.proName.setText(contact.name);
-            profileBinding.proContactCode.setText(String.format(Locale.getDefault(), "cc: %s", contact.userId));
+            profileBinding.proContactCode.setText(contact.userId);
             profileBinding.proInfo.setText(contact.reqType);
-
-            switch (contact.reqType) {
-                case Constants.REQUEST_ACCEPTED:
-                    profileBinding.proMessage.setVisibility(View.VISIBLE);
-                    profileBinding.proDisconnect.setVisibility(View.VISIBLE);
-                    break;
-                case Constants.REQUEST_REJECTED:
-                    profileBinding.proMessage.setText("Retry Connection");
-                    profileBinding.proMessage.setVisibility(View.VISIBLE);
-                    break;
-                case Constants.REQUEST_RECEIVED:
-                    profileBinding.proReqAccept.setVisibility(View.VISIBLE);
-                    profileBinding.proReqReject.setVisibility(View.VISIBLE);
-                    break;
-                case Constants.REQUEST_SENT:
-                    profileBinding.proReqAccept.setText("Delete Request");
-                    profileBinding.proReqAccept.setVisibility(View.VISIBLE);
-            }
         }
     }
 }

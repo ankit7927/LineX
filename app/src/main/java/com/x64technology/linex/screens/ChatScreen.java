@@ -47,6 +47,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     Socket socket;
     Calendar calendar;
     Message message;
+    int pageCount = 1;
 
 
 
@@ -59,8 +60,6 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         initVars();
 
         setCallbacks();
-
-
     }
 
     private void initVars() {

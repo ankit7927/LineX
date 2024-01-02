@@ -57,8 +57,8 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/materialCardView3"
-                android:layout_width="68dp"
-                android:layout_height="68dp"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 app:cardCornerRadius="45dp"
@@ -84,42 +84,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/pro_contact_code" />
 
             <Button
-                android:id="@+id/pro_req_accept"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="8dp"
-                android:text="accept"
-                android:visibility="gone"
-                app:layout_constraintEnd_toStartOf="@+id/pro_req_reject"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pro_info" />
-
-            <Button
-                android:id="@+id/pro_req_reject"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="reject"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/pro_req_accept" />
-
-            <Button
                 android:id="@+id/pro_message"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:text="message"
-                android:visibility="gone"
                 app:layout_constraintEnd_toStartOf="@+id/pro_disconnect"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pro_req_accept" />
+                app:layout_constraintTop_toBottomOf="@+id/pro_info" />
 
             <Button
                 android:id="@+id/pro_disconnect"
@@ -127,7 +101,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="disconnect"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/pro_message" />
 

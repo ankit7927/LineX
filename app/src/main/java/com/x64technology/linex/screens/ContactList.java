@@ -16,12 +16,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.x64technology.linex.R;
 import com.x64technology.linex.adapters.ContactAdapter;
+import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.contact.ContactViewModel;
+import com.x64technology.linex.database.noroom.DBService;
 import com.x64technology.linex.databinding.ActivityContactListBinding;
 import com.x64technology.linex.interfaces.ContactProfile;
+import com.x64technology.linex.models.Chat;
 import com.x64technology.linex.models.Contact;
 import com.x64technology.linex.services.AuthManager;
 import com.x64technology.linex.services.SocketManager;
@@ -39,9 +43,12 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
 
     ActivityContactListBinding contactListBinding;
     AuthManager authManager;
+    DBService dbService;
     CognitoUser cognitoUser;
+    LinearProgressIndicator progressBar;
     Map<String, String> userData;
     ContactViewModel contactViewModel;
+    ChatViewModel chatViewModel;
     Intent intent;
     ContactAdapter contactAdapter;
     Socket socket;
@@ -64,6 +71,11 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
         authManager = new AuthManager(this);
         cognitoUser = authManager.getUser();
 
+        progressBar = new LinearProgressIndicator(this);
+        progressBar.setIndeterminate(true);
+        progressBar.setTrackThickness(2);
+        contactListBinding.appbar.addView(progressBar, 0);
+
         getUserData();
 
         if (intent.hasExtra("new contact")) {
@@ -72,7 +84,11 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
             contactListBinding.layUserid.setVisibility(View.GONE);
             contactListBinding.btnSend.setVisibility(View.GONE);
         }
+
+        dbService = new DBService(this);
+
         contactViewModel = new ViewModelProvider(this).get(ContactViewModel.class);
+        chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
 
         contactAdapter = new ContactAdapter(this);
 
@@ -143,10 +159,57 @@ public class ContactList extends AppCompatActivity implements ContactProfile {
         startActivity(intent);
     }
 
+    @Override
+    public void onRequestAcceptClicked(Contact contact) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(Constants.RECEIVER, contact.userId);
+            jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
+            jsonObject.put(Constants.STR_NAME, userData.get("name"));
+            jsonObject.put(Constants.STR_DPLINK, userData.get("picture"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        socket.emit(Constants.EVENT_REQUEST_ACCEPTED, jsonObject);
+
+        contact.setReqType(Constants.REQUEST_ACCEPTED);
+        contactViewModel.update(contact);
+        chatViewModel.addNewChat(new Chat(contact.name, contact.userId, contact.userDp, "", "", 0));
+        dbService.newChat(contact.userId);
+        finish(); // TODO contact is not updating when request is accepted fix it
+    }
+
+    @Override
+    public void onRequestRejectClicked(Contact contact) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(Constants.RECEIVER, contact.userId);
+            jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        socket.emit(Constants.EVENT_REQUEST_REJECTED, jsonObject);
+        contactViewModel.delete(contact);
+    }
+
+    @Override
+    public void onRequestCancelClicked(Contact contact) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(Constants.RECEIVER, contact.userId);
+            jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        socket.emit(Constants.EVENT_REQUEST_CANCELED, jsonObject);
+        contactViewModel.delete(contact);
+    }
+
     private void getUserData() {
         cognitoUser.getDetailsInBackground(new GetDetailsHandler() {
             @Override
             public void onSuccess(CognitoUserDetails cognitoUserDetails) {
+                contactListBinding.appbar.removeView(progressBar);
                 userData = cognitoUserDetails.getAttributes().getAttributes();
             }
 
