@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.x64technology.linex.adapters.MessageAdapter;
 import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.noroom.DBService;
@@ -29,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.List;
 
 import io.socket.client.Socket;
 
@@ -40,6 +42,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     ChatViewModel chatViewModel;
     LinearLayoutManager msgLayoutMgr;
     DBService dbService;
+    LinearProgressIndicator progressBar;
     Chat chat;
     AppPreference appPreference;
     JSONObject jsonObject;
@@ -47,7 +50,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     Socket socket;
     Calendar calendar;
     Message message;
-    int pageCount = 1;
+    int pageNo = 1;
 
 
 
@@ -72,7 +75,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
 
         messageAdapter = new MessageAdapter(this);
-        messageAdapter.messages = dbService.getRangedMessages(chat.userid);
+        messageAdapter.messages = dbService.getRangedMessages(chat.userid, pageNo);
 
         chatBinding.msgRecycler.setAdapter(messageAdapter);
         msgLayoutMgr = new LinearLayoutManager(this);
@@ -84,6 +87,10 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
 
         appPreference = new AppPreference(this);
         calendar = Calendar.getInstance();
+
+        progressBar = new LinearProgressIndicator(this);
+        progressBar.setIndeterminate(true);
+        progressBar.setTrackThickness(2);
     }
 
 
@@ -95,7 +102,15 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                // TODO get chats when scrolled up
+                int firstItem = msgLayoutMgr.findFirstVisibleItemPosition();
+
+                if (msgLayoutMgr.getChildCount() + firstItem >= msgLayoutMgr.getItemCount() - 2 && firstItem >= 0) {
+                    pageNo++;
+                    List<Message> messages = dbService.getRangedMessages(chat.userid, pageNo);
+
+                    messageAdapter.messages.addAll(0, messages);
+                    messageAdapter.notifyItemRangeInserted(0, messages.size());
+                }
             }
         });
 

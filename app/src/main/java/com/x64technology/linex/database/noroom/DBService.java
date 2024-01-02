@@ -42,9 +42,10 @@ public class DBService {
         writableDb.insert(tableName, null, contentValues);
     }
 
-    public List<Message> getRangedMessages(String userid) {
+    public List<Message> getRangedMessages(String userid, int pgNo) {
+        int off = (pgNo -1) * 20;
         String tableName = "table_" + userid;
-        String r =String.format("SELECT * FROM %s ORDER BY %s DESC LIMIT 15", tableName, Constants.TIMESTAMP);
+        String r =String.format("SELECT * FROM %s ORDER BY %s DESC LIMIT %s OFFSET %s", tableName, Constants.TIMESTAMP, 20, off);
         Cursor cursor = readableDb.rawQuery(r, new String[] {});
         List<Message> messages = new ArrayList<>();
         while (cursor.moveToNext())
