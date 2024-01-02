@@ -30,8 +30,7 @@ public class ConfirmAccount extends AppCompatActivity {
 
         progressBar = new LinearProgressIndicator(this);
         progressBar.setIndeterminate(true);
-        progressBar.setTrackThickness(4);
-        progressBar.setPadding(16, 4, 16, 0);
+        progressBar.setTrackThickness(2);
 
         String username = getIntent().getStringExtra("username");
 

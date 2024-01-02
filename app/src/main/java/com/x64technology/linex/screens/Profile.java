@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.x64technology.linex.database.chat.ChatViewModel;
 import com.x64technology.linex.database.contact.ContactViewModel;
 import com.x64technology.linex.database.noroom.DBService;
@@ -31,6 +32,7 @@ import io.socket.client.Socket;
 public class Profile extends AppCompatActivity {
     ActivityProfileBinding profileBinding;
     AuthManager authManager;
+    LinearProgressIndicator progressBar;
     CognitoUser cognitoUser;
     Map<String, String> userData;
     Intent intent;
@@ -54,11 +56,15 @@ public class Profile extends AppCompatActivity {
     private void initVars() {
         intent = getIntent();
 
+        progressBar = new LinearProgressIndicator(this);
+        progressBar.setIndeterminate(true);
+        progressBar.setTrackThickness(2);
+        profileBinding.appbar.addView(progressBar, 0);
+
         checkOther();
 
         authManager = new AuthManager(this);
         cognitoUser = authManager.getUser();
-
 
         setUserData();
 
@@ -140,6 +146,7 @@ public class Profile extends AppCompatActivity {
         cognitoUser.getDetailsInBackground(new GetDetailsHandler() {
             @Override
             public void onSuccess(CognitoUserDetails cognitoUserDetails) {
+                profileBinding.appbar.removeView(progressBar);
                 userData = cognitoUserDetails.getAttributes().getAttributes();
 
                 profileBinding.proName.setText(userData.get("name"));
