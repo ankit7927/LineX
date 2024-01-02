@@ -28,6 +28,8 @@ import com.x64technology.linex.utils.Converter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 import io.socket.client.Socket;
 
 public class ChatScreen extends AppCompatActivity implements ChatInterFace {
@@ -43,6 +45,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     JSONObject jsonObject;
     Intent intent;
     Socket socket;
+    Calendar calendar;
     Message message;
 
 
@@ -81,6 +84,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         chatBinding.toolbar.setSubtitle(chat.userid);
 
         appPreference = new AppPreference(this);
+        calendar = Calendar.getInstance();
     }
 
 
@@ -96,12 +100,15 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
             }
         });
 
+
+        calendar.setTime(new Date());
+
         chatBinding.btnMsgSend.setOnClickListener(view -> {
             message = new Message();
             message.receiver = chat.userid;
             message.sender = cognitoUser.getUserId();
             message.content = chatBinding.msgBox.getEditableText().toString();
-            message.timestamp = (int) Calendar.getInstance(TimeZone.getDefault()).getTimeInMillis();
+            message.timestamp =(int) System.currentTimeMillis();
             message.isMine = true;
 
             chatBinding.msgBox.getEditableText().clear();

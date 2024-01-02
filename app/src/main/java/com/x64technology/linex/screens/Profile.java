@@ -99,6 +99,7 @@ public class Profile extends AppCompatActivity {
                     contactViewModel.update(contact);
                     chatViewModel.addNewChat(new Chat(contact.name, contact.userId, contact.userDp, "", "", 0));
                     dbService.newChat(contact.userId);
+                    finish();
                 }
             }
         });

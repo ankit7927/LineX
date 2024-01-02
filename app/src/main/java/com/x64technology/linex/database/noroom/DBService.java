@@ -23,19 +23,14 @@ public class DBService {
         readableDb = dbHelper.getReadableDatabase();
     }
 
-    private String getTableName (String str) {
-        return "table" + str.substring(str.length() - 7);
-    }
-
-
     public void newChat(String userid) {
-        String tableName = getTableName(userid);
+        String tableName = "table_" + userid;
         writableDb.execSQL(String.format(Constants.MESSAGE_TABLE_QUERY,
                 tableName, Constants.ID, Constants.RECEIVER, Constants.SENDER, Constants.CONTENT, Constants.TIMESTAMP, Constants.IS_MINE));
     }
 
     public void insertMsg(String userid, Message message) {
-        String tableName = getTableName(userid);
+        String tableName = "table_" + userid;
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(Constants.RECEIVER, message.receiver);
@@ -48,7 +43,7 @@ public class DBService {
     }
 
     public List<Message> getRangedMessages(String userid) {
-        String tableName = getTableName(userid);
+        String tableName = "table_" + userid;
         String r =String.format("SELECT * FROM %s ORDER BY %s DESC LIMIT 15", tableName, Constants.TIMESTAMP);
         Cursor cursor = readableDb.rawQuery(r, new String[] {});
         List<Message> messages = new ArrayList<>();

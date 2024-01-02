@@ -42,10 +42,10 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
         holder.chatBinding.nameTextview.setText(chat.name);
         holder.chatBinding.lastmsgTextView.setText(chat.lastMsg);
         holder.chatBinding.dateTextview.setText(chat.lastMsgTime);
-        if (chat.unreadCount == 0)
-            holder.chatBinding.msgCountTextview.setVisibility(View.GONE);
-        else
+        if (chat.unreadCount > 0)
             holder.chatBinding.msgCountTextview.setText(String.valueOf(chat.unreadCount));
+        else
+            holder.chatBinding.msgCountTextview.setVisibility(View.GONE);
 
         holder.itemView.setOnClickListener(view -> mainToChat.onChatClicked(chat));
     }
