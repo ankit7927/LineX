@@ -24,6 +24,14 @@ public class Message implements Serializable {
         this.isMine = isMine1;
     }
 
+    public Message(String receiver, String sender, String content, int timestamp, boolean isMine) {
+        this.receiver = receiver;
+        this.sender = sender;
+        this.content = content;
+        this.timestamp = timestamp;
+        this.isMine = isMine;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

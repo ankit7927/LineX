@@ -88,9 +88,7 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         appPreference = new AppPreference(this);
         calendar = Calendar.getInstance();
 
-        progressBar = new LinearProgressIndicator(this);
-        progressBar.setIndeterminate(true);
-        progressBar.setTrackThickness(2);
+
     }
 
 
@@ -118,12 +116,8 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         calendar.setTime(new Date());
 
         chatBinding.btnMsgSend.setOnClickListener(view -> {
-            message = new Message();
-            message.receiver = chat.userid;
-            message.sender = cognitoUser.getUserId();
-            message.content = chatBinding.msgBox.getEditableText().toString();
-            message.timestamp =(int) System.currentTimeMillis();
-            message.isMine = true;
+            message = new Message(chat.userid, cognitoUser.getUserId(), chatBinding.msgBox.getEditableText().toString().trim(),
+                    (int) System.currentTimeMillis(), true);
 
             chatBinding.msgBox.getEditableText().clear();
 
