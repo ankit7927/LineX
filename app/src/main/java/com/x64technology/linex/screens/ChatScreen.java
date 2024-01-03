@@ -35,6 +35,7 @@ import java.util.List;
 import io.socket.client.Socket;
 
 public class ChatScreen extends AppCompatActivity implements ChatInterFace {
+    public List<Message> messageList;
     ActivityChatBinding chatBinding;
     AuthManager authManager;
     CognitoUser cognitoUser;
@@ -42,7 +43,6 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     ChatViewModel chatViewModel;
     LinearLayoutManager msgLayoutMgr;
     DBService dbService;
-    LinearProgressIndicator progressBar;
     Chat chat;
     AppPreference appPreference;
     JSONObject jsonObject;
@@ -51,7 +51,6 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
     Calendar calendar;
     Message message;
     int pageNo = 1;
-
 
 
     @Override
@@ -74,8 +73,8 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         dbService = new DBService(this);
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
 
+        messageList = dbService.getRangedMessages(chat.userid, pageNo);
         messageAdapter = new MessageAdapter(this);
-        messageAdapter.messages = dbService.getRangedMessages(chat.userid, pageNo);
 
         chatBinding.msgRecycler.setAdapter(messageAdapter);
         msgLayoutMgr = new LinearLayoutManager(this);
@@ -106,41 +105,41 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
                     pageNo++;
                     List<Message> messages = dbService.getRangedMessages(chat.userid, pageNo);
 
-                    messageAdapter.messages.addAll(0, messages);
+                    messageList.addAll(0, messages);
                     messageAdapter.notifyItemRangeInserted(0, messages.size());
                 }
             }
         });
 
 
-        calendar.setTime(new Date());
-
         chatBinding.btnMsgSend.setOnClickListener(view -> {
+            calendar.setTime(new Date());
             message = new Message(chat.userid, cognitoUser.getUserId(), chatBinding.msgBox.getEditableText().toString().trim(),
-                    (int) System.currentTimeMillis(), true);
+                    (int) calendar.getTimeInMillis(), true);
 
             chatBinding.msgBox.getEditableText().clear();
 
-            messageAdapter.messages.add(message);
-            int x = messageAdapter.messages.size() -1;
-            messageAdapter.notifyItemInserted(x);
+            messageList.add(message);
+            messageAdapter.notifyItemInserted(messageList.size() -1);
 
-            chatBinding.msgRecycler.scrollToPosition(x);
+            chatBinding.msgRecycler.scrollToPosition(messageList.size() -1);
 
-            dbService.insertMsg(chat.userid, message);
+            new Thread(() -> {
+                dbService.insertMsg(chat.userid, message);
 
-            jsonObject = new JSONObject();
-            try {
-                jsonObject.put(Constants.CONTENT, message.content);
-                jsonObject.put(Constants.TIMESTAMP, message.timestamp);
-                jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
-                jsonObject.put(Constants.RECEIVER, chat.userid);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            socket.emit(Constants.EVENT_MESSAGE, jsonObject);
-            chat.lastMsg = message.content;
-            chat.lastMsgTime = Converter.MillisToTime(message.timestamp);
+                jsonObject = new JSONObject();
+                try {
+                    jsonObject.put(Constants.CONTENT, message.content);
+                    jsonObject.put(Constants.TIMESTAMP, message.timestamp);
+                    jsonObject.put(Constants.SENDER, cognitoUser.getUserId());
+                    jsonObject.put(Constants.RECEIVER, chat.userid);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                socket.emit(Constants.EVENT_MESSAGE, jsonObject);
+                chat.lastMsg = message.content;
+                chat.lastMsgTime = Converter.MillisToTime(message.timestamp);
+            }).start();
         });
     }
 
@@ -171,11 +170,10 @@ public class ChatScreen extends AppCompatActivity implements ChatInterFace {
         dbService.insertMsg(message1.sender, message1);
 
         runOnUiThread(() -> {
-            messageAdapter.messages.add(message1);
-            int x = messageAdapter.messages.size() -1;
-            messageAdapter.notifyItemInserted(x);
+            messageList.add(message1);
+            messageAdapter.notifyItemInserted(messageList.size() -1);
 
-            chatBinding.msgRecycler.scrollToPosition(x);
+            chatBinding.msgRecycler.scrollToPosition(messageList.size() -1);
         });
     }
 }

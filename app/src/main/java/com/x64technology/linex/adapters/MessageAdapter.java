@@ -12,6 +12,7 @@ import com.x64technology.linex.R;
 import com.x64technology.linex.databinding.LayoutMessageMineBinding;
 import com.x64technology.linex.databinding.LayoutMessageOtherBinding;
 import com.x64technology.linex.models.Message;
+import com.x64technology.linex.screens.ChatScreen;
 import com.x64technology.linex.utils.Converter;
 
 import java.util.List;
@@ -19,15 +20,16 @@ import java.util.List;
 public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
     Context context;
-    public List<Message> messages;
+    ChatScreen chatScreen;
 
     public MessageAdapter(Context context) {
         this.context = context;
+        this.chatScreen = (ChatScreen) context;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (messages.get(position).isMine) return 0;
+        if (chatScreen.messageList.get(position).isMine) return 0;
         else return 1;
     }
 
@@ -40,7 +42,7 @@ public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.Message
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        Message message = messages.get(position);
+        Message message = chatScreen.messageList.get(position);
         if (message.isMine) {
             holder.mineBinding.messageMine.setText(message.content);
             holder.mineBinding.msgTimeMine.setText(Converter.MillisToDateTime(message.timestamp));
@@ -53,7 +55,7 @@ public class MessageAdapter  extends RecyclerView.Adapter<MessageAdapter.Message
 
     @Override
     public int getItemCount() {
-        return messages.size();
+        return chatScreen.messageList.size();
     }
 
 
